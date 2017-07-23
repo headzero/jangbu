@@ -21,6 +21,7 @@
   // Get a reference to the database service
   var database = firebase.database();
 
+<<<<<<< HEAD
     function dateCheck() {
         var theForm = document.write_company_info;
         companyName = theForm.companyName.value;
@@ -55,6 +56,22 @@
             outstanding_num : outstandingNum
         });        
     }
+=======
+  function writeCompanyData(companyName, bossName, companyNum, phoneNum, accountNum, accountName, outstandingTotal) {
+
+  var companyId = database.ref().child('company').push().key;
+  database.ref('company/' + companyId).set({
+    company_id: companyId,
+    company_name: companyName,
+    boss_name: bossName,
+    company_num : companyNum,
+    phone_num : phoneNum,
+    account_num : accountNum,
+    account_name : accountName,
+    outstandingTotal : outstandingTotal
+  });
+}
+>>>>>>> sourceCode
 </script>
     
 <body>
