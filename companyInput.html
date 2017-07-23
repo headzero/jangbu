@@ -24,7 +24,7 @@
   // Get a reference to the database service
   var database = firebase.database();
 
-  function writeCompanyData(companyName, bossName, companyNum, phoneNum, accountNum, accountName) {
+  function writeCompanyData(companyName, bossName, companyNum, phoneNum, accountNum, accountName, outstandingTotal) {
 
   var companyId = database.ref().child('company').push().key;
   database.ref('company/' + companyId).set({
@@ -34,7 +34,8 @@
     company_num : companyNum,
     phone_num : phoneNum,
     account_num : accountNum,
-    account_name : accountName
+    account_name : accountName,
+    outstandingTotal : outstandingTotal
   });
 }
 </script>
