@@ -8,6 +8,14 @@
 
 <body>
 
+    <div>
+        <form name="daily_writer">
+            <label for="companySelector">회사 이름 : </label><select id="companySelector" name="companyId">
+                <option value="">회사를 선택하세요.</option>
+            </select>
+        </form>
+
+    </div>
 </body>
 
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
@@ -26,14 +34,41 @@
     // Get a reference to the database service
     var database = firebase.database();
 
+    var companyList = new Array();
+
+    function makeCompanyList() {
+        database.ref("company").once('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot) {
+                companyList.push(childSnapshot.val());
+            });
+            
+            var companySelector = document.getElementById("companySelector");
+            for (var i = 0; i < companyList.length; i++) {
+                console.log(companyList[i]);
+                var option = document.createElement("option");
+                option.value = companyList[i].company_id;
+                option.text = companyList[i].company_name;
+                companySelector.appendChild(option);
+            }
+        });
+    }
+    makeCompanyList();
 
     // 월, 날짜 셀렉터에서 가져온다.
     // companyId, companyName, 잔여 전미수outstandingAccout는 회사정보에서 가져온다.
     // 회사 && 날짜 의 경우 중복으로 예외처리를 할 수 있도록 한다.
-    function writeDailyData(date, companyId, companyName, radishCount, radishPrice, cabbageCount, cabbagePrice, etcCount, etcPrice, dailyTotal, outstandingAccout, discount, collect) {
-
+    function writeDailyData(date, companyId, radishCount, radishPrice, cabbageCount, cabbagePrice, etcCount, etcPrice, dailyTotal, discount, collect) {
+        // companydata from companyId;
+        // company list . get cId;
+        var companyName;
+        var outstandingAcocunt;
         var month = date.substring(0, 7);
         var outstandingTotal = outstandingAccout + dailyTotal - discount - collect;
+
+        writeDailyData(month, date, companyId, companyName, radishCount, radishPrice, cabbageCount, cabbagePrice, etcCount, etcPrice, dailyTotal, outstandingAccout, discount, collect, outstandingTotal);
+    }
+
+    function writeDailyData(month, date, companyId, companyName, radishCount, radishPrice, cabbageCount, cabbagePrice, etcCount, etcPrice, dailyTotal, outstandingAccout, discount, collect, outstandingTotal) {
 
         var dailyKey = database.ref().child('daily').push().key;
         database.ref('daily/' + dailyKey).set({
@@ -60,14 +95,15 @@
     }
 
     // todo : 읽기 from key.
-    
+
     // todo : 업데이트 데이터.
-    
+
     // todo : 삭제 from key.
-    
+
     // todo : 목록구현 from daily
-    
+
     // todo : search from month || 회사명 || 날짜 범위.
+
 </script>
 
 </html>
