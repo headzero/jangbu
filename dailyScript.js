@@ -16,8 +16,8 @@ function DailyManager(){
     }
     
     this.getCompanyList = function(companyListener){
-        var companyList = new Array();
         this.database.ref("company").on('value', function(snapshot) {
+            var companyList = new Array();
             snapshot.forEach(function(childSnapshot) {
                 companyList.push(childSnapshot.val());
             });

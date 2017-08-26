@@ -238,13 +238,17 @@
     };
     viewInit();
     
+    var currentCompanyList;
     var dailyManager = new DailyManager();
     dailyManager.initManager();
     dailyManager.getCompanyList(function(companyList){
-       var companySelector = document.getElementById('companySelector');
+        currentCompanyList = companyList;
+        var companySelector = document.getElementById('companySelector');
+        for(var i = companySelector.options.length -1; i > 0; i--){
+            companySelector.remove(i);
+        }
         console.log(companyList);
         for (var i = 0; i < companyList.length; i++) {
-            console.log(companyList[i]);
             var option = document.createElement('option');
             option.value = companyList[i].company_id;
             option.text = companyList[i].company_name;
