@@ -170,6 +170,9 @@
             var cabbage = cabbageTotal.value == '' ? 0 : parseInt(cabbageTotal.value);
             var etc = etcTotal.value == '' ? 0 : parseInt(etcTotal.value);
             dailyTotal.value = radish + cabbage + etc;
+            if(!unpaidCheck.checked){
+                collect.value = dailyTotal.value;    
+            }
         };
         var calculateOutstanding = function(){
             var dailyTotalValue = dailyTotal.value == '' ? 0 : parseInt(dailyTotal.value);
@@ -192,6 +195,7 @@
         var dailyTotal = document.getElementById('dailyTotal');
         dailyTotal.disabled = true;
         var discountHundred = document.getElementById('discountHundred');
+        var unpaidCheck = document.getElementById('unpaid');
         var collect = document.getElementById('collect');
         var outstandingAccout = document.getElementById('outstandingAccout');
         var outstandingTotal = document.getElementById('outstandingTotal');
@@ -208,8 +212,7 @@
         cabbageTotal.addEventListener('keyup', calculateTotal);
         etcTotal.addEventListener('keyup', calculateTotal);
         collect.addEventListener('keyup', calculateOutstanding);
-        
-        document.getElementById('unpaid').addEventListener('change', function(){
+        unpaidCheck.addEventListener('change', function(){
             if(this.checked){
                 collect.value = 0;
                 collect.disabled = true;
