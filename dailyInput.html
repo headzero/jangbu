@@ -181,8 +181,10 @@
             outstandingTotal.value = dailyTotalValue + outstandingValue - collectValue;
         };
         document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString();
-        document.getElementById('datePicker').valueAsDate = new Date();
         
+        var dailyWriterForm = document.getElementById('daily_writer');
+        var datePicker = document.getElementById('datePicker');
+        datePicker.valueAsDate = new Date();
         var companySelector = document.getElementById('companySelector');
         var companyOwnerName = document.getElementById('companyOwnerName');
         var radishCount = document.getElementById('radishCount');
@@ -253,13 +255,20 @@
         
         document.getElementById('clearForm').addEventListener('click', function(e){
             if(confirm('입력 내용을 지우시겠습니까?')){
-                document.getElementById('daily_writer').reset();    
+                dailyWriterForm.reset();    
             }
             e.preventDefault();
         });
         document.getElementById('submitForm').addEventListener('click', function(e){
-            console.log('submitClick');
             e.preventDefault();
+            console.log('submitClick');
+            dailyManager.writeDailyDataCalculated(datePicker.value, companySelector.value, 
+                                                  companySelector.getElementsByTagName('option')[companySelector.selectedIndex].innerHTML, companyOwnerName.value,
+                                                 radishCount.value, radishPrice.value, radishTotal.value,
+                                                 cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
+                                                 etcCount.value, etcPrice.value, etcTotal.value,
+                                                 dailyTotal.value, outstandingAccout.value, collect.value, outstandingTotal.value);
+            dailyWriterForm.reset();
         });
         
     };
