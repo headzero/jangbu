@@ -91,7 +91,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <span id='companyOwnerName'>{대표자 명}</span>
+                        <input id='companyOwnerName' type='text' value='{대표자 명}'/>
                     </td>
                     <td colspan='2'>
                         <span>무 합계 : </span>
@@ -183,6 +183,8 @@
         document.getElementById('currentDate').innerHTML = new Date().toLocaleDateString();
         document.getElementById('datePicker').valueAsDate = new Date();
         
+        var companySelector = document.getElementById('companySelector');
+        var companyOwnerName = document.getElementById('companyOwnerName');
         var radishCount = document.getElementById('radishCount');
         var radishPrice = document.getElementById('radishPrice');
         var radishTotal = document.getElementById('radishTotal');
@@ -202,6 +204,21 @@
         // todo 복구필요 -> outstandingAccout.disabled = true;
         outstandingTotal.disabled = true;
         
+        companySelector.addEventListener('change', function(){
+            var currentItemKey = this.options[ this.selectedIndex ].value;
+            if(currentItemKey != ''){
+                var companyCount = window.currentCompanyList.length;
+                for(var i = 0; i < companyCount; i++){
+                    var company = window.currentCompanyList[i];
+                    if(currentItemKey == company.company_id){
+                        companyOwnerName.value = company.boss_name;
+                        outstandingAccout.value = company.outstanding_num;
+                        break;
+                    }
+                }
+            }
+        });
+        companyOwnerName.disabled = true;
         radishCount.addEventListener('keyup', calculateRadish);
         radishPrice.addEventListener('keyup', calculateRadish);
         cabbageCount.addEventListener('keyup', calculateCarbbage);
@@ -212,6 +229,17 @@
         cabbageTotal.addEventListener('keyup', calculateTotal);
         etcTotal.addEventListener('keyup', calculateTotal);
         collect.addEventListener('keyup', calculateOutstanding);
+        discountHundred.addEventListener('change', function(){
+           if(this.checked){
+               var currentTotal = dailyTotal.value == '' ? 0 : parseInt(dailyTotal.value);
+               dailyTotal.value = currentTotal - (currentTotal % 1000);
+               if(!unpaidCheck.checked){
+                    collect.value = dailyTotal.value;    
+                }
+           } else {
+               calculateTotal();
+           }
+        });
         unpaidCheck.addEventListener('change', function(){
             if(this.checked){
                 collect.value = 0;
@@ -234,7 +262,6 @@
             e.preventDefault();
         });
         
-        // todo : 입력폼 자동화하기.
     };
     viewInit();
     
