@@ -9,11 +9,11 @@
             text-align: center;
             line-height: 1.5;
             border-left: 1px solid #ccc;
-            margin: 5px 5px;
+            margin: 20px 10px;
         }
 
         table.type07 thead th {
-            padding: 5px;
+            padding: 10px;
             font-weight: bold;
             border-top: 1px solid #ccc;
             border-right: 1px solid #ccc;
@@ -21,8 +21,8 @@
             background: #dcdcd1;
         }
         table.type07 tbody th {
-            width: 50px;
-            padding: 5px;
+            width: 150px;
+            padding: 10px;
             font-weight: bold;
             vertical-align: top;
             border-right: 1px solid #ccc;
@@ -30,8 +30,8 @@
             background: #ececec;
         }
         table.type07 td {
-            width: 50px;
-            padding: 5px;
+            width: 350px;
+            padding: 10px;
             vertical-align: top;
             border-right: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
@@ -90,10 +90,11 @@
 <hr>
         <p>
             <span id='currentDate'>업체 리스트 조회</span>
+            <input id=searchName type='text' />
         </p>
         <!--검색필드 필요-->
         <table class='type07'>
-            <form id='company_list'>
+            <form>
                 <thead>
                 <tr>
                     <th scope='cols'>회사명(필수)</th>
@@ -105,30 +106,7 @@
                     <th scope='cols'>미수금</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        <text id=companyNameList/>
-                    </td>
-                    <td>
-                        <text id=bossNameList/>
-                    </td>
-                    <td>
-                        <text id=companyNumList/>
-                    </td>
-                    <td>
-                        <text id=phoneNumList/>
-                    </td>
-                    <td>
-                        <text id=accountNumList />
-                    </td>
-                    <td>
-                        <text id=accountNameList />
-                    </td>
-                    <td>
-                        <text id=outstandingNumList/>
-                    </td>
-                </tr>
+                <tbody id='company_list'>
                 </tbody>
                 </form>
         </table>        
@@ -150,6 +128,30 @@
 
   // Get a reference to the database service
   var database = firebase.database();
+    
+    database.ref('/company/').on('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot){
+            var childKey = childSnapshot.key;
+            var childCompanyName = childSnapshot.val().company_name;
+            var childBossName = childSnapshot.val().boss_name;
+            var childCompanyNum = childSnapshot.val().company_num;
+            var childPhoneNum = childSnapshot.val().phone_num;
+            var childAccountNum = childSnapshot.val().account_num;
+            var childAccountName = childSnapshot.val().account_name;
+            var childOutstandingNum = childSnapshot.val().outstanding_num;
+            
+            document.getElementById('company_list').
+            innerHTML += "<tr><td>" + childCompanyName + "</td><td>"
+                + childBossName + "</td><td>"
+                + childCompanyNum + "</td><td>"
+                + childPhoneNum + "</td><td>"
+                + childAccountNum + "</td><td>"
+                + childAccountName + "</td><td>"
+                + childOutstandingNum + "</td></tr>";
+        });
+    });
+
+   var searchName = document.getElementById('searchName').value;
 
     document.getElementById('submitForm').addEventListener('click', function(e){
         var theForm = document.getElementById('company_writer');
@@ -160,17 +162,35 @@
         var accountNum = document.getElementById('accountNum').value;
         var accountName = document.getElementById('accountName').value;
         var outstandingNum = document.getElementById('outstandingNum').value;
+        var flag = false;
         
         if(companyName==""||companyName==undefined){
             alert("회사명을 입력해주세요.");
             return false;
         }
+        
+        database.ref('/company/').on('value', function(snapshot) {
+            snapshot.forEach(function(childSnapshot){
+                var childCompanyName = childSnapshot.val().company_name;
+                
+                if(companyName==childCompanyName){
+                    flag = true;
+                }
+            });
+        });
+        
+        if(flag){
+            alert("같은 이름의 회사가 있습니다.");
+            return false;
+        }
+        
         if(outstandingNum==""||outstandingNum==undefined){
             outstandingNum = 0;
         }
         
         writeCompanyDate(companyName, bossName, companyNum, phoneNum, accountNum, accountName, outstandingNum);
         document.getElementById('company_writer').reset();
+        alert("입력한 회사가 추가되었습니다.");
         console.log('submitClick');
         e.preventDefault();
     });
@@ -188,8 +208,6 @@
             outstanding_num : outstandingNum
         });        
     }
-    
-    
 </script>
     
 </html>
