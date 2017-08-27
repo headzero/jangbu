@@ -16,8 +16,8 @@ function DailyManager(){
     }
     
     this.getCompanyList = function(companyListener){
-        var companyList = new Array();
         this.database.ref("company").on('value', function(snapshot) {
+            var companyList = new Array();
             snapshot.forEach(function(childSnapshot) {
                 companyList.push(childSnapshot.val());
             });
@@ -40,9 +40,19 @@ function DailyManager(){
     }
 
     // do not use public
-    this.writeDailyDataCalculated = function(month, date, companyId, companyName, radishCount, radishPrice, cabbageCount, cabbagePrice, etcCount, etcPrice, dailyTotal, outstandingAccout, discount, collect, outstandingTotal) {
-
+    this.writeDailyDataCalculated = function(date, companyId, companyName, ownerName, 
+                                              radishCount, radishPrice, radishTotal, 
+                                              cabbageCount, cabbagePrice, cabbageTotal, 
+                                              etcCount, etcPrice, etcTotal, 
+                                              dailyTotal, outstandingAccout, collect, outstandingTotal) {
+        var daily = dailyTotal == '' ? 0 : parseInt(dailyTotal);
+        var radish = radishTotal == '' ? 0 : parseInt(radishTotal);
+        var cabbage = cabbageTotal == '' ? 0 : parseInt(cabbageTotal);
+        var etc = etcTotal == '' ? 0 : parseInt(etcTotal);
+        var discount = daily - (radish + cabbage + etc);
+        var month = date.substring(0, 7);
         var dailyKey = this.database.ref().child('daily').push().key;
+            
         this.database.ref('daily/' + dailyKey).set({
             month: month,
             date: date,
@@ -50,23 +60,27 @@ function DailyManager(){
             cName: companyName,
             radishCount: radishCount,
             radishPrice: radishPrice,
+            radishTotal: radishTotal,
             cabbageCount: cabbageCount,
             cabbagePrice: cabbagePrice,
+            cabbageTotal: cabbageTotal,
             etcCount: etcCount,
             etcPrice: etcPrice,
+            etcTotal: etcTotal,
             dailyTotal: dailyTotal,
-            outstandingAccout: outstandingAccout, // 전미수
+            currentOutstandingAccout: outstandingAccout, // 현재 시점의 전미수
             discount: discount, // 할인
             collect: collect, // 입금
             outstandingTotal: outstandingTotal // 미수합계. -> 회사 전미술 업데이트 필요.
         });
 
-        updateCompanyOutstandingTotal(outstandingTotal);
+        this.updateCompanyOutstandingTotal(companyId, outstandingTotal);
+        return false;
     }
     
-    this.updateCompanyOutstandingTotal = function(outstandingTotal){
+    this.updateCompanyOutstandingTotal = function(companyId, outstandingTotal){
         var updates = {};
-        updates['/outstandingTotal'] = outstandingTotal;
+        updates['/outstanding_num'] = outstandingTotal;
         this.database.ref('company/' + companyId).update(updates);
     };
 }
