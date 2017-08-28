@@ -142,7 +142,7 @@
             var childOutstandingNum = childSnapshot.val().outstanding_num;
             
             document.getElementById('company_list').
-            innerHTML += "<tr id=" + childKey + "><td>" + childCompanyName + "</td><td>"
+            innerHTML += "<tr><td><button onclick='showCompanyDetail(\"" + childKey + "\");'>" + childCompanyName + "</button></td><td>"
                 + childBossName + "</td><td>"
                 + childCompanyNum + "</td><td>"
                 + childPhoneNum + "</td><td>"
@@ -230,6 +230,11 @@
         
     });
     //todo : 회사리스트 클릭시 회사별 장부로 이동
+    function showCompanyDetail(companyKey){
+        console.log(companyKey);
+        localStorage.setItem("companyKey", companyKey);
+        window.open('./companyDetail.html', '_blank');
+    }
     
     function writeCompanyDate(companyName, bossName, companyNum, phoneNum, accountNum, accountName, outstandingNum){
         var companyId = database.ref().child('company').push().key;
