@@ -58,25 +58,25 @@
                 <tbody>
                 <tr>
                     <td>
-                        <text id=companyNameView />
+                        <span id='companyNameView'></span>
                     </td>
                     <td>
-                        <text id=bossNameView />
+                        <span id='bossNameView'></span>
                     </td>
                     <td>
-                        <text id=companyNumView />
+                        <span id='companyNumView'></span>
                     </td>
                     <td>
-                        <text id=phoneNumView />
+                        <span id='phoneNumView'></span>
                     </td>
                     <td>
-                        <text id=accountNumView />
+                        <span id='accountNumView'></span>
                     </td>
                     <td>
-                        <text id=accountNameView />
+                        <span id='accountNameView'></span>
                     </td>
                     <td>
-                        <text id=outstandingNumView />
+                        <span id='outstandingNumView'></span>
                     </td>
                 </tr>
                 <tr>
@@ -180,14 +180,15 @@
         alert("전달받은 회사 키" + companyKeyFrom);
         database.ref('/company/'+companyKeyFrom).once('value').then(function(snapshot) {
         var childKey = snapshot.key;
-        var childCompanyName = snapshot.val().company_name;
-        var childBossName = snapshot.val().boss_name;
-        var childCompanyNum = snapshot.val().company_num;
-        var childPhoneNum = snapshot.val().phone_num;
-        var childAccountNum = snapshot.val().account_num;
-        var childAccountName = snapshot.val().account_name;
-        var childOutstandingNum = snapshot.val().outstanding_num;
-        document.getElementById('companyNameView').value = childCompanyName;
+        var companyInfo = snapshot.val();
+        
+        var childBossName = companyInfo.boss_name;
+        var childCompanyNum = companyInfo.company_num;
+        var childPhoneNum = companyInfo.phone_num;
+        var childAccountNum = companyInfo.account_num;
+        var childAccountName = companyInfo.account_name;
+        var childOutstandingNum = companyInfo.outstanding_num;
+        document.getElementById('companyNameView').innerHTML = companyInfo.company_name;
         console.log(childCompanyName);
     });
         localStorage.removeItem('companyKey');
