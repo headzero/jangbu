@@ -16,6 +16,7 @@ function DailyManager(){
     }
     
     this.getCompanyList = function(companyListener){
+        // todo : on -> once로 변경후 child_added이벤트를 하나 더 사용한다
         this.database.ref("company").on('value', function(snapshot) {
             var companyList = new Array();
             snapshot.forEach(function(childSnapshot) {
@@ -23,6 +24,29 @@ function DailyManager(){
             });
             companyListener(companyList);    
         });
+    }
+    /*   'value' 는 모든 데이터, 'child_added'는 추가되는 데이터.
+     // child_changed 이벤트는 하위 노드가 수정될 때마다 발생
+     // child_removed 이벤트는 바로 아래 하위 항목이 삭제될 때 발생
+     
+    ref.on("child_added", function(snapshot, prevChildKey) {
+      var newPost = snapshot.val();
+      console.log("Author: " + newPost.author);
+      console.log("Title: " + newPost.title);
+      console.log("Previous Post ID: " + prevChildKey);
+    });
+    */
+    
+    this.getDailyData = function(date, dateCallback){
+        console.log(date);
+        this.database.ref("daily").orderByChild("date").equalTo(date)
+            .once('value', function(snapshot){
+                var dailyList = new Array();
+                snapshot.forEach(function(childSnapshot){
+                    dailyList.push(childSnapshot.val());
+                });
+                dateCallback(dailyList);
+          });
     }
 
     // 월, 날짜 셀렉터에서 가져온다.

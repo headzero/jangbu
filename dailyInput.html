@@ -142,6 +142,7 @@
 <hr>
         <p>
             <input type='date' id='currentDate'/>
+            <button id='loadDataButton'>불러오기</button>
         </p>
         <table class='type08'>
             
@@ -156,6 +157,10 @@
     
     writerViewInit();
     
+    var loadDataButton = document.getElementById('loadDataButton');
+    loadDataButton.addEventListener('click', function(e){
+        loadDailyDataFrom(dateSelector.value);
+    });
     var dateSelector = document.getElementById('currentDate');
     dateSelector.valueAsDate = new Date();
     
@@ -177,9 +182,13 @@
         }
     });
     
-//    dailyManager.getDailyData(dateSelector.value, function(dailyList){ 
-//        console.log(dailyList);
-//    });
+    var loadDailyDataFrom = function(date){
+        dailyManager.getDailyData(date, function(dailyList){ 
+            console.log(dailyList);
+        });
+    }
+    loadDailyDataFrom(dateSelector.value);                              
+    
     
     // todo : 입력된 결과를 자동으로 불러와서 표로 만들기.
 </script>
