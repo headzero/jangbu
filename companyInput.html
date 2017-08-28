@@ -37,6 +37,7 @@
             border-bottom: 1px solid #ccc;
         }
     </style>
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 </head>
 
 <body>
@@ -91,10 +92,9 @@
         <p>
             <span id='currentDate'>업체 리스트 조회</span>
             <input id=searchName type='text' />
-            <button id='searchBtn'>검색</button>
         </p>
         <!--검색필드 필요-->
-        <table class='type07'>
+        <table class='type07' id='company_table'>
             <form>
                 <thead>
                 <tr>
@@ -197,33 +197,7 @@
         e.preventDefault();
     });
     
-    document.getElementById('searchBtn').addEventListener('click', function(e){
-        var saerchName = document.getElementById('searchName').value;
-        database.ref('/company/').orderByChild('company_name').on('value', function(snapshot) {
-        snapshot.forEach(function(childSnapshot){
-            var childKey = childSnapshot.key;
-            var childCompanyName = childSnapshot.val().company_name;
-            var childBossName = childSnapshot.val().boss_name;
-            var childCompanyNum = childSnapshot.val().company_num;
-            var childPhoneNum = childSnapshot.val().phone_num;
-            var childAccountNum = childSnapshot.val().account_num;
-            var childAccountName = childSnapshot.val().account_name;
-            var childOutstandingNum = childSnapshot.val().outstanding_num;
-            
-            document.getElementById('company_list').
-            innerHTML += "<tr id=" + childKey + "><td>" + childCompanyName + "</td><td>"
-                + childBossName + "</td><td>"
-                + childCompanyNum + "</td><td>"
-                + childPhoneNum + "</td><td>"
-                + childAccountNum + "</td><td>"
-                + childAccountName + "</td><td>"
-                + childOutstandingNum + "</td></tr>";
-        });
-    });
-        
-        console.log('searchClick');
-        e.preventDefault();
-    });
+    //
     //todo : 회사 검색 클릭시 회사 검색
     
     document.getElementById('company_list').addEventListener('click', function(e){
@@ -250,5 +224,15 @@
         });        
     }
 </script>
+<script type="text/javascript">
+    jQuery(function($) {
+        $('#searchName').keyup(function(event) {
+            var val = $(this).val();
+            $("#company_table > tbody > tr").hide();
+            var temp = $("#company_table > tbody > tr > td:nth-child(7n+1):contains('" + val + "')");
+            $(temp).parent().show();
+            });
+    });
+    </script>
     
 </html>
