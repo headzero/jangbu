@@ -144,8 +144,25 @@
             <input type='date' id='currentDate'/>
             <button id='loadDataButton'>불러오기</button>
         </p>
+        
         <table class='type08'>
-            
+            <thead>
+                <tr>
+                    <th scope='cols'>회사명</th>
+                    <th scope='cols'>무</th>
+                    <th scope='cols'>양배추</th>
+                    <th scope='cols'>기타</th>
+                    <th scope='cols'>할인</th>
+                    <th scope='cols'>일합계</th>
+                    <th scope='cols'>전미수</th>
+                    <th scope='cols'>입금</th>
+                    <th scope='cols'>미수합계</th>
+                    <th scope='cols'>수정하기</th>
+                </tr>
+            </thead>
+            <tbody id='dailyResult'>
+                
+            </tbody>
         </table>
     </div>
 </body>
@@ -156,6 +173,9 @@
 <script>
     
     writerViewInit();
+    var updateDailyData = function(childKey){
+        alert(childKey);
+    };
     
     var loadDataButton = document.getElementById('loadDataButton');
     loadDataButton.addEventListener('click', function(e){
@@ -185,6 +205,25 @@
     var loadDailyDataFrom = function(date){
         dailyManager.getDailyData(date, function(dailyList){ 
             console.log(dailyList);
+            var dailyResultBody = document.getElementById('dailyResult');
+            console.log(dailyResultBody);
+            var dailyResultString = '';
+            var len = dailyList.length;
+            for(var i = 0; i < len; i++){
+                var dailyItem = dailyList[i];
+                dailyResultString += '<tr id=\'' + dailyItem.childKey + '\'><td>' 
+                    + dailyItem.cName + '</td><td>'
+                    + dailyItem.radishTotal + '</td><td>'
+                    + dailyItem.cabbageTotal + '</td><td>'
+                    + dailyItem.etcTotal + '</td><td>'
+                    + dailyItem.discount + '</td><td>'
+                    + dailyItem.dailyTotal + '</td><td>'
+                    + dailyItem.currentOutstandingAccout + '</td><td>'
+                    + dailyItem.collect + '</td><td>'
+                    + dailyItem.outstandingTotal + '</td><td>'
+                    + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td></tr>';
+            }
+            dailyResultBody.innerHTML = dailyResultString;
         });
     }
     loadDailyDataFrom(dateSelector.value);                              

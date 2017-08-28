@@ -43,7 +43,9 @@ function DailyManager(){
             .once('value', function(snapshot){
                 var dailyList = new Array();
                 snapshot.forEach(function(childSnapshot){
-                    dailyList.push(childSnapshot.val());
+                    var childData = childSnapshot.val();
+                    childData.childKey = childSnapshot.key;
+                    dailyList.push(childData);
                 });
                 dateCallback(dailyList);
           });
@@ -52,18 +54,10 @@ function DailyManager(){
     // 월, 날짜 셀렉터에서 가져온다.
     // companyId, companyName, 잔여 전미수outstandingAccout는 회사정보에서 가져온다.
     // 회사 && 날짜 의 경우 중복으로 예외처리를 할 수 있도록 한다.
-    this.writeDailyData = function(date, companyId, radishCount, radishPrice, cabbageCount, cabbagePrice, etcCount, etcPrice, dailyTotal, discount, collect) {
-        // companydata from companyId;
+    // companydata from companyId;
         // company list . get cId;
-        var companyName;
-        var outstandingAcocunt;
-        var month = date.substring(0, 7);
-        var outstandingTotal = outstandingAccout + dailyTotal - discount - collect;
-
-        writeDailyDataCalculated(month, date, companyId, companyName, radishCount, radishPrice, cabbageCount, cabbagePrice, etcCount, etcPrice, dailyTotal, outstandingAccout, discount, collect, outstandingTotal);
-    }
-
-    // do not use public
+    
+    
     this.writeDailyDataCalculated = function(date, companyId, companyName, ownerName, 
                                               radishCount, radishPrice, radishTotal, 
                                               cabbageCount, cabbagePrice, cabbageTotal, 
