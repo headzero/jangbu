@@ -42,7 +42,52 @@
 <body>
     <h1>회사 상세!!!!!</h1>
     <div>
-        <table class='type07'>
+        <table class='type07' id='company_view'>
+                <form id='company_writer'>
+                <thead>
+                <tr>
+                    <th scope='cols'>회사명(필수)</th>
+                    <th scope='cols'>대표 성명</th>
+                    <th scope='cols'>사업자번호</th>
+                    <th scope='cols'>전화번호</th>
+                    <th scope='cols'>계좌번호</th>
+                    <th scope='cols'>예금주</th>
+                    <th scope='cols'>미수금</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <text id=companyNameView />
+                    </td>
+                    <td>
+                        <text id=bossNameView />
+                    </td>
+                    <td>
+                        <text id=companyNumView />
+                    </td>
+                    <td>
+                        <text id=phoneNumView />
+                    </td>
+                    <td>
+                        <text id=accountNumView />
+                    </td>
+                    <td>
+                        <text id=accountNameView />
+                    </td>
+                    <td>
+                        <text id=outstandingNumView />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan='7'>
+                        <button id='edit'>수정</button>
+                    </td>
+                </tr>
+                </tbody>
+                </form>
+            </table>
+        <table class='type07' id='company_edit' style="visibility:hidden;">
                 <form id='company_writer'>
                 <thead>
                 <tr>
@@ -126,15 +171,31 @@
     messagingSenderId: "763168792123"
   };
   firebase.initializeApp(config);
-
+    
+    var database = firebase.database();
+    
     var companyKeyFrom = localStorage.getItem('companyKey');
     console.log(companyKeyFrom);
     if(companyKeyFrom != '' && companyKeyFrom != null){
         alert("전달받은 회사 키" + companyKeyFrom);
+        database.ref('/company/'+companyKeyFrom).once('value').then(function(snapshot) {
+        var childKey = snapshot.key;
+        var childCompanyName = snapshot.val().company_name;
+        var childBossName = snapshot.val().boss_name;
+        var childCompanyNum = snapshot.val().company_num;
+        var childPhoneNum = snapshot.val().phone_num;
+        var childAccountNum = snapshot.val().account_num;
+        var childAccountName = snapshot.val().account_name;
+        var childOutstandingNum = snapshot.val().outstanding_num;
+        document.getElementById('companyNameView').value = childCompanyName;
+        console.log(childCompanyName);
+    });
         localStorage.removeItem('companyKey');
     } else {
         alert("전달받은 키가 없을때");
     }
+    
+    
   // Get a reference to the database service
 //  var database = firebase.database();
 //    
@@ -205,34 +266,9 @@
 //        e.preventDefault();
 //    });
 //    
-//    document.getElementById('searchBtn').addEventListener('click', function(e){
-//        var saerchName = document.getElementById('searchName').value;
-//        database.ref('/company/').orderByChild('company_name').on('value', function(snapshot) {
-//        snapshot.forEach(function(childSnapshot){
-//            var childKey = childSnapshot.key;
-//            var childCompanyName = childSnapshot.val().company_name;
-//            var childBossName = childSnapshot.val().boss_name;
-//            var childCompanyNum = childSnapshot.val().company_num;
-//            var childPhoneNum = childSnapshot.val().phone_num;
-//            var childAccountNum = childSnapshot.val().account_num;
-//            var childAccountName = childSnapshot.val().account_name;
-//            var childOutstandingNum = childSnapshot.val().outstanding_num;
-//            
-//            document.getElementById('company_list').
-//            innerHTML += "<tr id=" + childKey + "><td>" + childCompanyName + "</td><td>"
-//                + childBossName + "</td><td>"
-//                + childCompanyNum + "</td><td>"
-//                + childPhoneNum + "</td><td>"
-//                + childAccountNum + "</td><td>"
-//                + childAccountName + "</td><td>"
-//                + childOutstandingNum + "</td></tr>";
-//        });
-//    });
-//        
-//        console.log('searchClick');
-//        e.preventDefault();
-//    });
-//    //todo : 회사 검색 클릭시 회사 검색
+
+        
+    //todo : 회사 검색 클릭시 회사 검색
 //    
 //    document.getElementById('company_list').addEventListener('click', function(e){
 //        
