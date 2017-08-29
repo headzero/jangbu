@@ -3,46 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>회사 추가</title>
-    <style type='text/css'>
-        table.type07 {
-            border-collapse: collapse;
-            text-align: center;
-            line-height: 1.5;
-            border-left: 1px solid #ccc;
-            margin: 20px 10px;
-        }
-
-        table.type07 thead th {
-            padding: 10px;
-            font-weight: bold;
-            border-top: 1px solid #ccc;
-            border-right: 1px solid #ccc;
-            border-bottom: 2px solid #c00;
-            background: #dcdcd1;
-        }
-        table.type07 tbody th {
-            width: 150px;
-            padding: 10px;
-            font-weight: bold;
-            vertical-align: top;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            background: #ececec;
-        }
-        table.type07 td {
-            width: 350px;
-            padding: 10px;
-            vertical-align: top;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-        }
-    </style>
+ 	<link rel="stylesheet" href="jangbu.css" type="text/css">
     <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 </head>
 
 <body>
     <h1>회사 추가</h1>
-    <div>
+    <div class="company">
         <table class='type07'>
                 <form id='company_writer'>
                 <thead>
@@ -107,7 +74,7 @@
                     <th scope='cols'>미수금</th>
                 </tr>
                 </thead>
-                <tbody id='company_list'>
+                <tbody id='company_list' class='companybtn'>
                 </tbody>
                 </form>
         </table>        
@@ -130,7 +97,7 @@
   // Get a reference to the database service
   var database = firebase.database();
     
-    database.ref('/company/').on('value', function(snapshot) {
+    database.ref('/company/').once('value', function(snapshot) {
         snapshot.forEach(function(childSnapshot){
             var childKey = childSnapshot.key;
             var childCompanyName = childSnapshot.val().company_name;
@@ -194,7 +161,6 @@
         document.getElementById('company_writer').reset();
         alert("입력한 회사가 추가되었습니다.");
         console.log('submitClick');
-        e.preventDefault();
     });
     
     //

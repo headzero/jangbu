@@ -3,50 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>회사 상세</title>
-    <style type='text/css'>
-        table.type07 {
-            border-collapse: collapse;
-            text-align: center;
-            line-height: 1.5;
-            border-left: 1px solid #ccc;
-            margin: 20px 10px;
-        }
-
-        table.type07 thead th {
-            padding: 10px;
-            font-weight: bold;
-            border-top: 1px solid #ccc;
-            border-right: 1px solid #ccc;
-            border-bottom: 2px solid #c00;
-            background: #dcdcd1;
-        }
-        table.type07 tbody th {
-            width: 150px;
-            padding: 10px;
-            font-weight: bold;
-            vertical-align: top;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            background: #ececec;
-        }
-        table.type07 td {
-            width: 350px;
-            padding: 10px;
-            vertical-align: top;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-        }
-    </style>
+    <link rel="stylesheet" href="jangbu.css" type="text/css">
 </head>
 
 <body>
-    <h1>회사 상세!!!!!</h1>
-    <div>
+    <h1 id='title'></h1>
+    <div class="company">
         <table class='type07' id='company_view'>
                 <form id='company_writer'>
                 <thead>
                 <tr>
-                    <th scope='cols'>회사명(필수)</th>
+                    <th scope='cols'>회사명</th>
                     <th scope='cols'>대표 성명</th>
                     <th scope='cols'>사업자번호</th>
                     <th scope='cols'>전화번호</th>
@@ -58,75 +25,32 @@
                 <tbody>
                 <tr>
                     <td>
-                        <span id='companyNameView'></span>
+                        <input id='companyNameView' style="border: hiddle"/>
                     </td>
                     <td>
-                        <span id='bossNameView'></span>
+                        <input id='bossNameView' style="border: hiddle"/>
                     </td>
                     <td>
-                        <span id='companyNumView'></span>
+                        <input id='companyNumView' style="border: hiddle"/>
                     </td>
                     <td>
-                        <span id='phoneNumView'></span>
+                        <input id='phoneNumView' style="border: hiddle"/>
                     </td>
                     <td>
-                        <span id='accountNumView'></span>
+                        <input id='accountNumView' style="border: hiddle"/>
                     </td>
                     <td>
-                        <span id='accountNameView'></span>
+                        <input id='accountNameView' style="border: hiddle"/>
                     </td>
                     <td>
-                        <span id='outstandingNumView'></span>
+                        <input id='outstandingNumView' style="border: hiddle"/>
                     </td>
                 </tr>
                 <tr>
                     <td colspan='7'>
-                        <button id='edit'>수정</button>
-                    </td>
-                </tr>
-                </tbody>
-                </form>
-            </table>
-        <table class='type07' id='company_edit' style="visibility:hidden;">
-                <form id='company_writer'>
-                <thead>
-                <tr>
-                    <th scope='cols'>회사명(필수)</th>
-                    <th scope='cols'>대표 성명</th>
-                    <th scope='cols'>사업자번호</th>
-                    <th scope='cols'>전화번호</th>
-                    <th scope='cols'>계좌번호</th>
-                    <th scope='cols'>예금주</th>
-                    <th scope='cols'>미수금</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        <input id=companyName type='text' />
-                    </td>
-                    <td>
-                        <input id=bossName type='text' />
-                    </td>
-                    <td>
-                        <input id=companyNum type='text' pattern='\d{3}-\d{2}-\d{5}' />
-                    </td>
-                    <td>
-                        <input id=phoneNum type='tel' pattern='\d{2,3,4}-\d{3,4}-\d{4}' />
-                    </td>
-                    <td>
-                        <input id=accountNum type='text' />
-                    </td>
-                    <td>
-                        <input id=accountName type='text' />
-                    </td>
-                    <td>
-                        <input id=outstandingNum type='number' />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan='7'>
-                        <button id='submitForm'>저장</button>
+                        <button id='editCompanyInfoBtn' style="display: inline">수정</button>
+                        <button id='saveCompanyInfoBtn' style="display: none">저장</button>
+                        <button id='cancelCompanyInfoBtn' style="display: none">취소</button>
                     </td>
                 </tr>
                 </tbody>
@@ -134,9 +58,7 @@
             </table>
 <hr>
         <p>
-            <span id='currentDate'>업체 리스트 조회</span>
-            <input id=searchName type='text' />
-            <button id='searchBtn'>검색</button>
+            <span id='currentDate'>일자별 조회</span>
         </p>
         <!--검색필드 필요-->
         <table class='type07'>
@@ -162,44 +84,135 @@
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
 <script>
   // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyDVEonurEpbMwfmBVGKp0jIbOBcv9ukht4",
-    authDomain: "jangbu-3af0b.firebaseapp.com",
-    databaseURL: "https://jangbu-3af0b.firebaseio.com",
-    projectId: "jangbu-3af0b",
-    storageBucket: "",
-    messagingSenderId: "763168792123"
-  };
-  firebase.initializeApp(config);
+    var config = {
+        apiKey: "AIzaSyDVEonurEpbMwfmBVGKp0jIbOBcv9ukht4",
+        authDomain: "jangbu-3af0b.firebaseapp.com",
+        databaseURL: "https://jangbu-3af0b.firebaseio.com",
+        projectId: "jangbu-3af0b",
+        storageBucket: "",
+        messagingSenderId: "763168792123"
+    };
+    
+    firebase.initializeApp(config);
     
     var database = firebase.database();
     
+    var companyName = document.getElementById('companyNameView');
+    var bossName = document.getElementById('bossNameView');
+    var companyNum = document.getElementById('companyNumView');
+    var phoneNum = document.getElementById('phoneNumView');
+    var accountNum = document.getElementById('accountNumView');
+    var accountName = document.getElementById('accountNameView');
+    var outstandingNum = document.getElementById('outstandingNumView');
+    
+    var editBtn = document.getElementById('editCompanyInfoBtn');
+    var saveBtn = document.getElementById('saveCompanyInfoBtn');
+    var cancelBtn = document.getElementById('cancelCompanyInfoBtn');
+    
+    companyName.disabled = true;
+    bossName.disabled = true;
+    companyNum.disabled = true;
+    phoneNum.disabled = true;
+    accountNum.disabled = true;
+    accountName.disabled = true;
+    outstandingNum.disabled = true;
+    
     var companyKeyFrom = localStorage.getItem('companyKey');
+    
     console.log(companyKeyFrom);
+    
     if(companyKeyFrom != '' && companyKeyFrom != null){
-        alert("전달받은 회사 키" + companyKeyFrom);
         database.ref('/company/'+companyKeyFrom).once('value').then(function(snapshot) {
-        var childKey = snapshot.key;
-        var companyInfo = snapshot.val();
-        
-        var childBossName = companyInfo.boss_name;
-        var childCompanyNum = companyInfo.company_num;
-        var childPhoneNum = companyInfo.phone_num;
-        var childAccountNum = companyInfo.account_num;
-        var childAccountName = companyInfo.account_name;
-        var childOutstandingNum = companyInfo.outstanding_num;
-        document.getElementById('companyNameView').innerHTML = companyInfo.company_name;
-        console.log(childCompanyName);
-    });
-        localStorage.removeItem('companyKey');
+            var childKey = snapshot.key;
+            var companyInfo = snapshot.val();
+            
+            document.getElementById('title').innerHTML = companyInfo.company_name;
+            
+            companyName.value = companyInfo.company_name;
+            bossName.value = companyInfo.boss_name;
+            companyNum.value = companyInfo.company_num;
+            phoneNum.value = companyInfo.phone_num;
+            accountNum.value = companyInfo.account_num;
+            accountName.value = companyInfo.account_name;
+            outstandingNum.value = companyInfo.outstanding_num;
+        });    
+//        localStorage.removeItem('companyKey');
     } else {
-        alert("전달받은 키가 없을때");
+        alert("잘못된 경로입니다.");
     }
     
+    editBtn.addEventListener('click', function(e){
+        companyName.disabled = false;
+        bossName.disabled = false;
+        companyNum.disabled = false;
+        phoneNum.disabled = false;
+        accountNum.disabled = false;
+        accountName.disabled = false;
+        outstandingNum.disabled = false;
+        
+        editBtn.style.display = "none";
+        saveBtn.style.display = "inline";
+        cancelBtn.style.display = "inline";
+        e.preventDefault();
+    });
     
-  // Get a reference to the database service
-//  var database = firebase.database();
-//    
+    saveBtn.addEventListener('click', function(e){
+        database.ref('company/' + companyKeyFrom).set({
+            company_id: companyKeyFrom,
+            company_name: companyName.value,
+            boss_name: bossName.value,
+            company_num : companyNum.value,
+            phone_num : phoneNum.value,
+            account_num : accountNum.value,
+            account_name : accountName.value,
+            outstanding_num : outstandingNum.value
+        });
+        
+        companyName.disabled = true;
+        bossName.disabled = true;
+        companyNum.disabled = true;
+        phoneNum.disabled = true;
+        accountNum.disabled = true;
+        accountName.disabled = true;
+        outstandingNum.disabled = true;
+        
+        editBtn.style.display = "inline";
+        saveBtn.style.display = "none";
+        cancelBtn.style.display = "none";
+        e.preventDefault();
+        alert("수정되었습니다.");
+    });
+    
+    
+    cancelBtn.addEventListener('click', function(e){
+        database.ref('/company/'+companyKeyFrom).once('value').then(function(snapshot) {
+            var childKey = snapshot.key;
+            var companyInfo = snapshot.val();
+
+            companyName.value = companyInfo.company_name;
+            bossName.value = companyInfo.boss_name;
+            companyNum.value = companyInfo.company_num;
+            phoneNum.value = companyInfo.phone_num;
+            accountNum.value = companyInfo.account_num;
+            accountName.value = companyInfo.account_name;
+            outstandingNum.value = companyInfo.outstanding_num;
+        });
+        
+        companyName.disabled = true;
+        bossName.disabled = true;
+        companyNum.disabled = true;
+        phoneNum.disabled = true;
+        accountNum.disabled = true;
+        accountName.disabled = true;
+        outstandingNum.disabled = true;
+        
+        editBtn.style.display = "inline";
+        saveBtn.style.display = "none";
+        cancelBtn.style.display = "none";
+        e.preventDefault();
+    });
+        
+    
 //    database.ref('/company/').on('value', function(snapshot) {
 //        snapshot.forEach(function(childSnapshot){
 //            var childKey = childSnapshot.key;

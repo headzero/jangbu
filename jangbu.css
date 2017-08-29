@@ -1,0 +1,43 @@
+table.type07 {
+    border-collapse: collapse;
+    text-align: center;
+    line-height: 1.5;
+    border-left: 1px solid #ccc;
+    margin: 20px 10px;
+}
+
+table.type07 thead th {
+    padding: 5px;
+    font-weight: bold;
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #c00;
+    background: #dcdcd1;
+}
+
+table.type07 tbody th {
+    width: 100px;
+    padding: 5px;
+    font-weight: bold;
+    vertical-align: top;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background: #ececec;
+}
+
+table.type07 td {
+    width: 100px;
+    padding: 5px;
+    vertical-align: top;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.company input {
+    width:inherit;
+    height: inherit;
+}
+
+.companybtn button {
+    width: 100%;
+}
