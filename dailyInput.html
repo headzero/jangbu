@@ -3,7 +3,7 @@
 
 <head>
     <meta charset='UTF-8'>
-    <title>Title</title>
+    <title>일일 장부</title>
     <style type='text/css'>
         table.type08 {
             border-collapse: collapse;
@@ -157,7 +157,8 @@
                     <th scope='cols'>전미수</th>
                     <th scope='cols'>입금</th>
                     <th scope='cols'>미수합계</th>
-                    <th scope='cols'>수정하기</th>
+                    <th scope='cols'>수정</th>
+                    <th scope='cols'>삭제</th>
                 </tr>
             </thead>
             <tbody id='dailyResult'>
@@ -171,11 +172,17 @@
 <script src='./dailyWriter.js'></script>
 <script src='./dailyScript.js'></script>
 <script>
-    
     writerViewInit();
+    
     var updateDailyData = function(childKey){
         alert(childKey);
     };
+    
+    var removeDailyData = function(childKey){
+        if(confirm('삭제하시겠습니까?')){
+            dailyManager.removeDailyItem(childKey);
+        }
+    }
     
     var loadDataButton = document.getElementById('loadDataButton');
     loadDataButton.addEventListener('click', function(e){
@@ -185,15 +192,20 @@
     dateSelector.valueAsDate = new Date();
     
     var currentCompanyList;
+    var currentDailyList;
+    
+    var commonDailyManagerCallback = new DailyCommonCallback();
+    
     var dailyManager = new DailyManager();
-    dailyManager.initManager();
+    dailyManager.initManager(commonDailyManagerCallback);
     dailyManager.getCompanyList(function(companyList){
         currentCompanyList = companyList;
+        console.log(companyList);
+        
         var companySelector = document.getElementById('companySelector');
         for(var i = companySelector.options.length -1; i > 0; i--){
             companySelector.remove(i);
         }
-        console.log(companyList);
         for (var i = 0; i < companyList.length; i++) {
             var option = document.createElement('option');
             option.value = companyList[i].company_id;
@@ -204,9 +216,9 @@
     
     var loadDailyDataFrom = function(date){
         dailyManager.getDailyData(date, function(dailyList){ 
+            currentDailyList = dailyList;
             console.log(dailyList);
             var dailyResultBody = document.getElementById('dailyResult');
-            console.log(dailyResultBody);
             var dailyResultString = '';
             var len = dailyList.length;
             for(var i = 0; i < len; i++){
@@ -221,15 +233,21 @@
                     + dailyItem.currentOutstandingAccout + '</td><td>'
                     + dailyItem.collect + '</td><td>'
                     + dailyItem.outstandingTotal + '</td><td>'
-                    + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td></tr>';
+                    + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td><td>'
+                    + '<button onclick=\'removeDailyData("'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
             }
             dailyResultBody.innerHTML = dailyResultString;
         });
     }
     loadDailyDataFrom(dateSelector.value);                              
     
-    
-    // todo : 입력된 결과를 자동으로 불러와서 표로 만들기.
+    function DailyCommonCallback(){
+        this.removeChild = function(childKey){
+            var removeItem = document.getElementById(childKey);
+            removeItem.parentElement.removeChild(removeItem);
+            alert("삭제완료");
+        }
+    }
 </script>
 
 </html>

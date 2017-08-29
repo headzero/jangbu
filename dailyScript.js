@@ -1,6 +1,8 @@
 // need Firebase app before use this.
 function DailyManager(){
+    var self = this;
     this.database;
+    this.dailyManagerCallback;
     this.config = {
         apiKey: "AIzaSyDVEonurEpbMwfmBVGKp0jIbOBcv9ukht4",
         authDomain: "jangbu-3af0b.firebaseapp.com",
@@ -9,15 +11,21 @@ function DailyManager(){
         storageBucket: "",
         messagingSenderId: "763168792123"
     };
-    this.initManager = function(){
-        firebase.initializeApp(this.config);    
-        this.database = firebase.database();
-        console.log("initfinish");
+    this.initManager = function (commonDailyManagerCallback) {
+        self.dailyManagerCallback = commonDailyManagerCallback;
+        firebase.initializeApp(self.config);    
+        self.database = firebase.database();
+        var dailyRef = self.database.ref("daily");
+        dailyRef.on('child_removed', function(oldSnapshot){
+            console.log("childRemoved : ");
+            console.log(oldSnapshot.val());
+            self.dailyManagerCallback.removeChild(oldSnapshot.key);
+        });
     }
     
-    this.getCompanyList = function(companyListener){
+    this.getCompanyList = function (companyListener) {
         // todo : on -> once로 변경후 child_added이벤트를 하나 더 사용한다
-        this.database.ref("company").on('value', function(snapshot) {
+        self.database.ref("company").on('value', function(snapshot) {
             var companyList = new Array();
             snapshot.forEach(function(childSnapshot) {
                 companyList.push(childSnapshot.val());
@@ -38,8 +46,7 @@ function DailyManager(){
     */
     
     this.getDailyData = function(date, dateCallback){
-        console.log(date);
-        this.database.ref("daily").orderByChild("date").equalTo(date)
+        self.database.ref("daily").orderByChild("date").equalTo(date)
             .once('value', function(snapshot){
                 var dailyList = new Array();
                 snapshot.forEach(function(childSnapshot){
@@ -69,9 +76,10 @@ function DailyManager(){
         var etc = etcTotal == '' ? 0 : parseInt(etcTotal);
         var discount = daily - (radish + cabbage + etc);
         var month = date.substring(0, 7);
-        var dailyKey = this.database.ref().child('daily').push().key;
-            
-        this.database.ref('daily/' + dailyKey).set({
+        
+        var dailyKey = self.database.ref().child('daily').push().key;    
+        
+        self.database.ref('daily/' + dailyKey).set({
             month: month,
             date: date,
             cId: companyId,
@@ -92,25 +100,21 @@ function DailyManager(){
             outstandingTotal: outstandingTotal // 미수합계. -> 회사 전미술 업데이트 필요.
         });
 
-        this.updateCompanyOutstandingTotal(companyId, outstandingTotal);
+        self.updateCompanyOutstandingTotal(companyId, outstandingTotal);
         return false;
     }
     
     this.updateCompanyOutstandingTotal = function(companyId, outstandingTotal){
         var updates = {};
         updates['/outstanding_num'] = outstandingTotal;
-        this.database.ref('company/' + companyId).update(updates);
+        self.database.ref('company/' + companyId).update(updates);
+    };
+    
+    this.removeDailyItem = function(childKey){
+        self.database.ref('daily/' + childKey).remove();
     };
 }
     
-
-    
-    // todo : 읽기 from key.
-
     // todo : 업데이트 데이터.
-
-    // todo : 삭제 from key.
-
-    // todo : 목록구현 from daily
 
     // todo : search from month || 회사명 || 날짜 범위.
