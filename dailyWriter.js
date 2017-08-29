@@ -1,6 +1,5 @@
 var dailyWriterForm = document.getElementById('daily_writer');
 var datePicker = document.getElementById('datePicker');
-var datePicker = document.getElementById('datePicker');
 var companySelector = document.getElementById('companySelector');
 var companyOwnerName = document.getElementById('companyOwnerName');
 var radishCount = document.getElementById('radishCount');
@@ -19,7 +18,7 @@ var collect = document.getElementById('collect');
 var outstandingAccout = document.getElementById('outstandingAccout');
 var outstandingTotal = document.getElementById('outstandingTotal');
 
-this.writerViewInit = function(){
+var writerViewInit = function(){
         var calculateRadish = function(){
             radishTotal.value = radishCount.value * radishPrice.value;
             calculateTotal();
@@ -123,3 +122,25 @@ this.writerViewInit = function(){
         });
         
     };
+
+var setUpdateForm = function (currentDailyItem, companyItem){
+    console.log(currentDailyItem);
+    datePicker.value = currentDailyItem.date;
+    companySelector.value = currentDailyItem.cId;
+    companySelector.disabled = true; // todo : restore
+    companyOwnerName.value = (companyItem == undefined)? '' : companyItem.boss_name;
+    radishCount.value = currentDailyItem.radishCount;
+    radishPrice.value = currentDailyItem.radishPrice;
+    radishTotal.value = currentDailyItem.radishTotal;
+    cabbageCount.value = currentDailyItem.cabbageCount;
+    cabbagePrice.value = currentDailyItem.cabbagePrice;
+    cabbageTotal.value = currentDailyItem.cabbageTotal;
+    etcCount.value = currentDailyItem.etcCount;
+    etcPrice.value = currentDailyItem.etcPrice;
+    etcTotal.value = currentDailyItem.etcTotal;
+    dailyTotal.value = currentDailyItem.dailyTotal;
+    collect.value = currentDailyItem.collect;
+    outstandingAccout.value = currentDailyItem.currentOutstandingAccout;
+    outstandingTotal.value = currentDailyItem.outstandingTotal;
+    // todo : 저장 할 때는 현재 선택된 키를 사용할 수 있도록 수정..
+}

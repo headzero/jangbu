@@ -177,7 +177,27 @@
     writerViewInit();
     
     var updateDailyData = function(childKey){
-        alert(childKey);
+        var currentDailyItem;
+        var len = currentDailyList.length;
+        for(var i = 0; i < len; i++){
+            if(currentDailyList[i].childKey == childKey){
+                currentDailyItem = currentDailyList[i];
+                break;
+            }
+        }
+        if(currentDailyItem == undefined){
+            alert('수정할 아이템을 못찾았습니다. 페이지를 다시 불러주세요.')
+        } else {
+            var companyItem;
+            var companyLen = currentCompanyList.length;
+            for(var i = 0; i < companyLen; i++){
+                if(currentCompanyList[i].company_id == currentDailyItem.cId){
+                    companyItem = currentCompanyList[i];
+                    break;
+                }
+            }
+            setUpdateForm(currentDailyItem, companyItem);
+        }
     };
     
     var removeDailyData = function(childKey){
