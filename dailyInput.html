@@ -37,6 +37,8 @@
             border-right: 1px solid #ccc;
             border-bottom: 1px solid #ccc;
         }
+        
+        .item_count {color:blue; font-size: 10px;}
     </style>
 </head>
 
@@ -225,8 +227,11 @@
                 var dailyItem = dailyList[i];
                 dailyResultString += '<tr id=\'' + dailyItem.childKey + '\'><td>' 
                     + dailyItem.cName + '</td><td>'
+                    + '<span class=\'item_count\'>' + dailyItem.radishCount + '</span> '
                     + dailyItem.radishTotal + '</td><td>'
+                    + '<span class=\'item_count\'>' + dailyItem.cabbageCount + '</span> '
                     + dailyItem.cabbageTotal + '</td><td>'
+                    + '<span class=\'item_count\'>' + dailyItem.etcCount + '</span> '
                     + dailyItem.etcTotal + '</td><td>'
                     + dailyItem.discount + '</td><td>'
                     + dailyItem.dailyTotal + '</td><td>'
