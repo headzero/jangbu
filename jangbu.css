@@ -1,4 +1,4 @@
-table.type07 {
+table.type08 {
     border-collapse: collapse;
     text-align: center;
     line-height: 1.5;
@@ -6,7 +6,7 @@ table.type07 {
     margin: 20px 10px;
 }
 
-table.type07 thead th {
+table.type08 thead th {
     padding: 5px;
     font-weight: bold;
     border-top: 1px solid #ccc;
@@ -15,7 +15,7 @@ table.type07 thead th {
     background: #dcdcd1;
 }
 
-table.type07 tbody th {
+table.type08 tbody th {
     width: 100px;
     padding: 5px;
     font-weight: bold;
@@ -25,19 +25,45 @@ table.type07 tbody th {
     background: #ececec;
 }
 
-table.type07 td {
+table.type08 td {
     width: 100px;
     padding: 5px;
     vertical-align: top;
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
+    vertical-align: middle;
 }
 
-.company input {
-    width:inherit;
-    height: inherit;
+table.type08 label {
+    font-size: 13px;
+}
+
+input {
+    width:100px;
+    height: 30px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.date {
+    width: 200px;
 }
 
 .companybtn button {
     width: 100%;
+}
+
+.menu a, b {
+    border: 5px;
+}
+
+.item_count {
+    color:blue;
+    font-size: 10px;
+}
+
+.companyselector {
+    width: 150px;
+    height: 30px;
+    font-size: 15px;
 }

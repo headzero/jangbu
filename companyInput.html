@@ -10,7 +10,7 @@
 <body>
     <h1>회사 추가</h1>
     <div class="company">
-        <table class='type07'>
+        <table class='type08'>
                 <form id='company_writer'>
                 <thead>
                 <tr>
@@ -61,7 +61,7 @@
             <input id=searchName type='text' />
         </p>
         <!--검색필드 필요-->
-        <table class='type07' id='company_table'>
+        <table class='type08' id='company_table'>
             <form>
                 <thead>
                 <tr>
@@ -173,7 +173,7 @@
     function showCompanyDetail(companyKey){
         console.log(companyKey);
         localStorage.setItem("companyKey", companyKey);
-        window.open('./companyDetail.html', '_blank');
+        location.href = './companyDetail.html';
     }
     
     function writeCompanyDate(companyName, bossName, companyNum, phoneNum, accountNum, accountName, outstandingNum){

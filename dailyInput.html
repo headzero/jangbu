@@ -4,49 +4,14 @@
 <head>
     <meta charset='UTF-8'>
     <title>일일 장부</title>
-    <style type='text/css'>
-        table.type08 {
-            border-collapse: collapse;
-            text-align: center;
-            line-height: 1.5;
-            border-left: 1px solid #ccc;
-            margin: 20px 10px;
-        }
-
-        table.type08 thead th {
-            padding: 10px;
-            font-weight: bold;
-            border-top: 1px solid #ccc;
-            border-right: 1px solid #ccc;
-            border-bottom: 2px solid #c00;
-            background: #dcdcd1;
-        }
-        table.type08 tbody th {
-            width: 150px;
-            padding: 10px;
-            font-weight: bold;
-            vertical-align: top;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            background: #ececec;
-        }
-        table.type08 td {
-            width: 350px;
-            padding: 10px;
-            vertical-align: top;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-        }
-        
-        .item_count {color:blue; font-size: 10px;}
-    </style>
+        <link rel="stylesheet" href="jangbu.css" type="text/css">
 </head>
 
 <body>
 
     <div>
         
-            <label for='datePicker'>날짜 입력 : </label><input id='datePicker' type='date' name='datePicker'/><br />
+            <label for='datePicker'>날짜 입력 : </label><input class="date" id='datePicker' type='date' name='datePicker'/><br />
             <table class='type08'>
                 <form id='daily_writer'>
                 <thead>
@@ -64,7 +29,7 @@
                 <tbody>
                 <tr>
                     <td>
-                        <select id='companySelector' name='companyId'>
+                        <select class="companyselector" id='companySelector' name='companyId'>
                             <option value=''>회사를 선택하세요.</option>
                         </select>
                     </td>
@@ -143,7 +108,7 @@
             </table>
 <hr>
         <p>
-            <input type='date' id='currentDate'/>
+            <input class="date" type='date' id='currentDate'/>
             <button id='loadDataButton'>불러오기</button>
         </p>
         
