@@ -47,7 +47,7 @@ function DailyManager(){
     
     this.getDailyData = function(date, dateCallback){
         self.database.ref("daily").orderByChild("date").equalTo(date)
-            .once('value', function(snapshot){
+            .on('value', function(snapshot){ // todo : on -> once;
                 var dailyList = new Array();
                 snapshot.forEach(function(childSnapshot){
                     var childData = childSnapshot.val();
