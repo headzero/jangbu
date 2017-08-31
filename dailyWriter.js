@@ -112,8 +112,25 @@ var writerViewInit = function(){
         });
         document.getElementById('submitForm').addEventListener('click', function(e){
             e.preventDefault();
-            dailyManager.writeDailyDataCalculated(datePicker.value, companySelector.value, 
-                                                  companySelector.getElementsByTagName('option')[companySelector.selectedIndex].innerHTML, companyOwnerName.value,
+            console.log(currentDailyList);
+            if(companySelector.value == ''){
+                alert('회사를 선택하세요');
+                return;
+            }
+            var companySelectorChilds = companySelector.children;
+            for (var i = 0; i < currentDailyList.length; i++){
+                if(companySelector.value == currentDailyList[i].cId){
+                    alert("오늘 거래내역이 이미 있습니다.")
+                    return;
+                }
+            }
+            
+            if(dailyTotal.value == '' || dailyTotal.value == 0){
+                alert("일 합계가 0원 입니다.")
+                return;
+            }
+            
+            dailyManager.writeDailyDataCalculated(datePicker.value, companySelector.value, companySelectorChilds[companySelector.selectedIndex].innerHTML, companyOwnerName.value,
                                                  radishCount.value, radishPrice.value, radishTotal.value,
                                                  cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
                                                  etcCount.value, etcPrice.value, etcTotal.value,
@@ -125,6 +142,7 @@ var writerViewInit = function(){
 
 var setUpdateForm = function (currentDailyItem, companyItem){
     console.log(currentDailyItem);
+    var currentItemKey = currentDailyItem.childKey;
     datePicker.value = currentDailyItem.date;
     companySelector.value = currentDailyItem.cId;
     companySelector.disabled = true; // todo : restore
