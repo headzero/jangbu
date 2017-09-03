@@ -205,6 +205,15 @@
         dailyManager.getDailyData(date, function(dailyList){ 
             currentDailyList = dailyList;
             console.log(dailyList);
+            var sumRadishCount = 0;
+            var sumRadishTotal = 0;
+            var sumCabbageCount = 0;
+            var sumCabbageTotal = 0;
+            var sumEtcCount = 0;
+            var sumEtcTotal = 0;
+            var sumDiscountTotal = 0;
+            var sumDailyTotal = 0;
+            var sumCollect = 0;
             var dailyResultBody = document.getElementById('dailyResult');
             var dailyResultString = '';
             var len = dailyList.length;
@@ -225,7 +234,26 @@
                     + dailyItem.outstandingTotal + '</td><td>'
                     + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td><td>'
                     + '<button onclick=\'removeDailyData("'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
+                sumRadishCount += getInt(dailyItem.radishCount);
+                sumRadishTotal += getInt(dailyItem.radishTotal);
+                sumCabbageCount += getInt(dailyItem.cabbageCount);
+                sumCabbageTotal += getInt(dailyItem.cabbageTotal);
+                sumEtcCount += getInt(dailyItem.etcCount);
+                sumEtcTotal += getInt(dailyItem.etcTotal);
+                sumDiscountTotal += getInt(dailyItem.discount);
+                sumDailyTotal += getInt(dailyItem.dailyTotal);
+                sumCollect += getInt(dailyItem.collect);
             }
+            dailyResultString += '<tr><td>합계</td><td>'
+                + '<span class=\'item_count\'>' + sumRadishCount + '</span> '
+                + sumRadishTotal + '</td><td>'
+                + '<span class=\'item_count\'>' + sumCabbageCount + '</span> '
+                + sumCabbageTotal + '</td><td>'
+                + '<span class=\'item_count\'>' + sumEtcCount + '</span> '
+                + sumEtcTotal + '</td><td>'
+                + sumDiscountTotal + '</td><td>'
+                + sumDailyTotal + '</td><td></td><td>'
+                + sumCollect + '</td><td></td><td></td><td></td></tr>';
             dailyResultBody.innerHTML = dailyResultString;
         });
     }
@@ -247,6 +275,13 @@
             }
             alert("삭제완료");
         }
+    }
+    
+    var getInt = function(inputValue){
+        if(inputValue == '' || inputValue == undefined || inputValue == null){
+            return 0;
+        }
+        return parseInt(inputValue);
     }
 </script>
 

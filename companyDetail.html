@@ -216,7 +216,8 @@
     });
     
     console.log("companyKey : " + companyKeyFrom);
-    database.ref('daily').orderByChild("cId").equalTo(companyKeyFrom)
+    database.ref('daily').orderByChild('cId').equalTo(companyKeyFrom)
+        //.orderByChild("date").startAt('2017-08-29').endAt('2017-08-29')
         .once('value', function(snapshot){
             var dailyList = new Array();
             snapshot.forEach(function(childSnapshot){
@@ -257,15 +258,15 @@
                 + dailyItem.outstandingTotal + '</td><td>'
                 + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td><td>'
                 + '<button onclick=\'removeDailyData("'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
-            sumRadishCount += dailyItem.radishCount == '' ? 0 : parseInt(dailyItem.radishCount);
-            sumRadishTotal += dailyItem.radishTotal == '' ? 0 : parseInt(dailyItem.radishTotal);
-            sumCabbageCount += dailyItem.cabbageCount == '' ? 0 : parseInt(dailyItem.cabbageCount);
-            sumCabbageTotal += dailyItem.cabbageTotal == '' ? 0 : parseInt(dailyItem.cabbageTotal);
-            sumEtcCount += dailyItem.etcCount == '' ? 0 : parseInt(dailyItem.etcCount);
-            sumEtcTotal += dailyItem.etcTotal == '' ? 0 : parseInt(dailyItem.etcTotal);
-            sumDiscountTotal += dailyItem.discount == '' ? 0 : parseInt(dailyItem.discount);
-            sumDailyTotal += dailyItem.dailyTotal == '' ? 0 : parseInt(dailyItem.dailyTotal);
-            sumCollect += dailyItem.collect == '' ? 0 : parseInt(dailyItem.collect);
+            sumRadishCount += getInt(dailyItem.radishCount);
+            sumRadishTotal += getInt(dailyItem.radishTotal);
+            sumCabbageCount += getInt(dailyItem.cabbageCount);
+            sumCabbageTotal += getInt(dailyItem.cabbageTotal);
+            sumEtcCount += getInt(dailyItem.etcCount);
+            sumEtcTotal += getInt(dailyItem.etcTotal);
+            sumDiscountTotal += getInt(dailyItem.discount);
+            sumDailyTotal += getInt(dailyItem.dailyTotal);
+            sumCollect += getInt(dailyItem.collect);
         }
         dailyResultString += '<tr><td>합계</td><td>'
                 + '<span class=\'item_count\'>' + sumRadishCount + '</span> '
@@ -278,6 +279,13 @@
                 + sumDailyTotal + '</td><td></td><td>'
                 + sumCollect + '</td><td></td><td></td><td></td></tr>';
         dailyResultBody.innerHTML = dailyResultString;
+    }
+    
+    var getInt = function(inputValue){
+        if(inputValue == '' || inputValue == undefined || inputValue == null){
+            return 0;
+        }
+        return parseInt(inputValue);
     }
 //    database.ref('/company/').on('value', function(snapshot) {
 //        snapshot.forEach(function(childSnapshot){
