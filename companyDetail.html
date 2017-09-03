@@ -62,22 +62,25 @@
         </p>
         <!--검색필드 필요-->
         <table class='type08'>
-            <form>
-                <thead>
+            <thead>
                 <tr>
-                    <th scope='cols'>회사명(필수)</th>
-                    <th scope='cols'>대표 성명</th>
-                    <th scope='cols'>사업자번호</th>
-                    <th scope='cols'>전화번호</th>
-                    <th scope='cols'>계좌번호</th>
-                    <th scope='cols'>예금주</th>
-                    <th scope='cols'>미수금</th>
+                    <th scope='cols'>날짜</th>
+                    <th scope='cols'>무</th>
+                    <th scope='cols'>양배추</th>
+                    <th scope='cols'>기타</th>
+                    <th scope='cols'>할인</th>
+                    <th scope='cols'>일합계</th>
+                    <th scope='cols'>전미수</th>
+                    <th scope='cols'>입금</th>
+                    <th scope='cols'>미수합계</th>
+                    <th scope='cols'>수정</th>
+                    <th scope='cols'>삭제</th>
                 </tr>
-                </thead>
-                <tbody id='company_list'>
-                </tbody>
-                </form>
-        </table>        
+            </thead>
+            <tbody id='dailyResult'>
+                
+            </tbody>
+        </table>     
     </div>
 </body>
     
@@ -211,8 +214,71 @@
         cancelBtn.style.display = "none";
         e.preventDefault();
     });
-        
     
+    console.log("companyKey : " + companyKeyFrom);
+    database.ref('daily').orderByChild("cId").equalTo(companyKeyFrom)
+        .once('value', function(snapshot){
+            var dailyList = new Array();
+            snapshot.forEach(function(childSnapshot){
+                var childData = childSnapshot.val();
+                childData.childKey = childSnapshot.key;
+                dailyList.push(childData);
+            });
+            showCompanyDailyDetail(dailyList);
+    });
+    
+    var showCompanyDailyDetail = function(dailyList){
+        var dailyResultBody = document.getElementById('dailyResult');
+        var dailyResultString = '';
+        var len = dailyList.length;
+        var sumRadishCount = 0;
+        var sumRadishTotal = 0;
+        var sumCabbageCount = 0;
+        var sumCabbageTotal = 0;
+        var sumEtcCount = 0;
+        var sumEtcTotal = 0;
+        var sumDiscountTotal = 0;
+        var sumDailyTotal = 0;
+        var sumCollect = 0;
+        for(var i = 0; i < len; i++){
+            var dailyItem = dailyList[i];
+            dailyResultString += '<tr id=\'' + dailyItem.childKey + '\'><td>' 
+                + dailyItem.date + '</td><td>'
+                + '<span class=\'item_count\'>' + dailyItem.radishCount + '</span> '
+                + dailyItem.radishTotal + '</td><td>'
+                + '<span class=\'item_count\'>' + dailyItem.cabbageCount + '</span> '
+                + dailyItem.cabbageTotal + '</td><td>'
+                + '<span class=\'item_count\'>' + dailyItem.etcCount + '</span> '
+                + dailyItem.etcTotal + '</td><td>'
+                + dailyItem.discount + '</td><td>'
+                + dailyItem.dailyTotal + '</td><td>'
+                + dailyItem.currentOutstandingAccout + '</td><td>'
+                + dailyItem.collect + '</td><td>'
+                + dailyItem.outstandingTotal + '</td><td>'
+                + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td><td>'
+                + '<button onclick=\'removeDailyData("'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
+            sumRadishCount += dailyItem.radishCount == '' ? 0 : parseInt(dailyItem.radishCount);
+            sumRadishTotal += dailyItem.radishTotal == '' ? 0 : parseInt(dailyItem.radishTotal);
+            sumCabbageCount += dailyItem.cabbageCount == '' ? 0 : parseInt(dailyItem.cabbageCount);
+            sumCabbageTotal += dailyItem.cabbageTotal == '' ? 0 : parseInt(dailyItem.cabbageTotal);
+            sumEtcCount += dailyItem.etcCount == '' ? 0 : parseInt(dailyItem.etcCount);
+            sumEtcTotal += dailyItem.etcTotal == '' ? 0 : parseInt(dailyItem.etcTotal);
+            sumDiscountTotal += dailyItem.discount == '' ? 0 : parseInt(dailyItem.discount);
+            sumDailyTotal += dailyItem.dailyTotal == '' ? 0 : parseInt(dailyItem.dailyTotal);
+            sumCollect += dailyItem.collect == '' ? 0 : parseInt(dailyItem.collect);
+        }
+        dailyResultString += '<tr><td>합계</td><td>'
+                + '<span class=\'item_count\'>' + sumRadishCount + '</span> '
+                + sumRadishTotal + '</td><td>'
+                + '<span class=\'item_count\'>' + sumCabbageCount + '</span> '
+                + sumCabbageTotal + '</td><td>'
+                + '<span class=\'item_count\'>' + sumEtcCount + '</span> '
+                + sumEtcTotal + '</td><td>'
+                + sumDiscountTotal + '</td><td>'
+                + sumDailyTotal + '</td><td></td><td>'
+                + sumCollect + '</td><td></td><td></td><td></td></tr>';
+        dailyResultBody.innerHTML = dailyResultString;
+    }
 //    database.ref('/company/').on('value', function(snapshot) {
 //        snapshot.forEach(function(childSnapshot){
 //            var childKey = childSnapshot.key;
