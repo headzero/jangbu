@@ -58,7 +58,9 @@
             </table>
 <hr>
         <p>
-            <span id='currentDate'>일자별 조회</span>
+            <span id='currentDate'>일자별 조회</span><br/>
+            <input class='month' type='month' id='selectMonth'/>
+            <button id='loadDataButton'>불러오기</button>
         </p>
         <!--검색필드 필요-->
         <table class='type08'>
@@ -85,7 +87,6 @@
 </body>
     
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
-<script src="./firebaseUtil.js"></script>
 <script>
   // Initialize Firebase
     var config = {
@@ -215,19 +216,27 @@
         cancelBtn.style.display = "none";
         e.preventDefault();
     });
-    
-    console.log("companyKey : " + companyKeyFrom);
-    var monthString = '2017-07';
-    database.ref('daily/' + monthString).orderByChild('cId').equalTo(companyKeyFrom)
-        .once('value', function(snapshot){
-            var dailyList = new Array();
-            snapshot.forEach(function(childSnapshot){
-                var childData = childSnapshot.val();
-                childData.childKey = childSnapshot.key;
-                dailyList.push(childData);
-            });
-            showCompanyDailyDetail(dailyList);
+    var loadDataButton = document.getElementById('loadDataButton');
+    loadDataButton.addEventListener('click', function(e){
+        loadDailyDataFrom(monthSelector.value);
     });
+    var monthSelector = document.getElementById('selectMonth');
+    monthSelector.valueAsDate = new Date();
+    
+    
+    var loadDailyDataFrom = function(month){
+        database.ref('daily/' + month).orderByChild('cId').equalTo(companyKeyFrom)
+            .once('value', function(snapshot){
+                var dailyList = new Array();
+                snapshot.forEach(function(childSnapshot){
+                    var childData = childSnapshot.val();
+                    childData.childKey = childSnapshot.key;
+                    dailyList.push(childData);
+                });
+                showCompanyDailyDetail(dailyList);
+        });    
+    }
+    loadDailyDataFrom(monthSelector.value);
     
     
     var showCompanyDailyDetail = function(dailyList){
@@ -284,80 +293,10 @@
     }
     
     var getInt = function(inputValue){
-//        console.log(inputValue);
         if(inputValue == '' || inputValue == undefined || inputValue == null){
             return 0;
         }
         return parseInt(inputValue);
-    }
-    
-    var sleep = function(ms){
-        var initial = +new Date()           
-        while(+new Date() < initial + ms){}
-    }
-    
-    var inputItemsKeyWithString = function(companyKey, dataString){
-        var dailyList = dataString.split('|');
-        for(var i = 0; i < dailyList.length; i++){
-            sleep(1000);
-            var item = dailyList[i].split(',');
-            
-            writeDailyDataAutoInput(companyKey,
-                item[0], item[1], item[2],
-                item[3], item[4], item[5],
-                item[6], item[7], item[8],
-                item[9], item[10], item[11],
-                item[12], item[13], item[14],
-                item[15], item[16]);
-        }
-    }
-    
-    var writeDailyDataAutoInput = function(companyKey, date, companyName, ownerName, 
-                                              radishCount, radishPrice, radishTotal, 
-                                              cabbageCount, cabbagePrice, cabbageTotal, 
-                                              etcCount, etcPrice, etcTotal, 
-                                              dailyTotal, outstandingAccout, discount, collect, outstandingTotal) {
-        var dailyTotal = getInt(dailyTotal);
-        if(dailyTotal == 0){
-            console.log("skip data. 일합계 = 0");
-            return;
-        }
-        
-        var month = date.substring(0, 7);
-        var dailyKey = database.ref().child('daily/' + month).push().key;    
-        
-        database.ref('daily/' + month + '/' + dailyKey).set({
-            date: date,
-            cId: companyKey,
-            cName: companyName,
-            radishCount: getInt(radishCount),
-            radishPrice: getInt(radishPrice),
-            radishTotal: getInt(radishTotal),
-            cabbageCount: getInt(cabbageCount),
-            cabbagePrice: getInt(cabbagePrice),
-            cabbageTotal: getInt(cabbageTotal),
-            etcCount: getInt(etcCount),
-            etcPrice: getInt(etcPrice),
-            etcTotal: getInt(etcTotal),
-            dailyTotal: getInt(dailyTotal),
-            currentOutstandingAccout: getInt(outstandingAccout), // 현재 시점의 전미수
-            discount: getInt(discount), // 할인
-            collect: getInt(collect), // 입금
-            outstandingTotal: getInt(outstandingTotal) // 미수합계. -> 회사 전미술 업데이트 필요.
-        });
-        return false;
-    }
-
-    var firebaseUtil = new FirebaseUtil();
-    var copySnapshotWithMonth = function(month){
-        firebaseUtil.copyFbRecord(
-        database.ref('daily').orderByChild('month').equalTo(month),
-        database.ref('daily/' + month));
-    }
-    
-    var removeSnapshotWithMonth = function(month){
-        firebaseUtil.removeFbRecord(database, 
-        database.ref('daily').orderByChild('month').equalTo(month));
     }
     
 </script>

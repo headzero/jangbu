@@ -49,6 +49,10 @@ input {
     width: 200px;
 }
 
+.month {
+    width: 200px;
+}
+
 .companybtn button {
     width: 100%;
 }
