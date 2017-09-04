@@ -97,7 +97,7 @@
   // Get a reference to the database service
   var database = firebase.database();
     
-    database.ref('/company/').once('value', function(snapshot) {
+    database.ref('/company/').orderByChild('company_name').once('value', function(snapshot) {
         snapshot.forEach(function(childSnapshot){
             var childKey = childSnapshot.key;
             var childCompanyName = childSnapshot.val().company_name;
