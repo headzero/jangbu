@@ -85,6 +85,7 @@
 </body>
     
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+<script src="./firebaseUtil.js"></script>
 <script>
   // Initialize Firebase
     var config = {
@@ -216,8 +217,8 @@
     });
     
     console.log("companyKey : " + companyKeyFrom);
-    database.ref('daily').orderByChild('cId').equalTo(companyKeyFrom)
-        //.orderByChild("date").startAt('2017-08-29').endAt('2017-08-29')
+    var monthString = '2017-07';
+    database.ref('daily/' + monthString).orderByChild('cId').equalTo(companyKeyFrom)
         .once('value', function(snapshot){
             var dailyList = new Array();
             snapshot.forEach(function(childSnapshot){
@@ -227,6 +228,7 @@
             });
             showCompanyDailyDetail(dailyList);
     });
+    
     
     var showCompanyDailyDetail = function(dailyList){
         var dailyResultBody = document.getElementById('dailyResult');
@@ -282,104 +284,82 @@
     }
     
     var getInt = function(inputValue){
+//        console.log(inputValue);
         if(inputValue == '' || inputValue == undefined || inputValue == null){
             return 0;
         }
         return parseInt(inputValue);
     }
-//    database.ref('/company/').on('value', function(snapshot) {
-//        snapshot.forEach(function(childSnapshot){
-//            var childKey = childSnapshot.key;
-//            var childCompanyName = childSnapshot.val().company_name;
-//            var childBossName = childSnapshot.val().boss_name;
-//            var childCompanyNum = childSnapshot.val().company_num;
-//            var childPhoneNum = childSnapshot.val().phone_num;
-//            var childAccountNum = childSnapshot.val().account_num;
-//            var childAccountName = childSnapshot.val().account_name;
-//            var childOutstandingNum = childSnapshot.val().outstanding_num;
-//            
-//            document.getElementById('company_list').
-//            innerHTML += "<tr><td><button onclick='showCompanyDetail(\"" + childKey + "\");'>" + childCompanyName + "</button></td><td>"
-//                + childBossName + "</td><td>"
-//                + childCompanyNum + "</td><td>"
-//                + childPhoneNum + "</td><td>"
-//                + childAccountNum + "</td><td>"
-//                + childAccountName + "</td><td>"
-//                + childOutstandingNum + "</td></tr>";
-//        });
-//    });
-//    //하단 회사 리스트 출력
-//
-//   var searchName = document.getElementById('searchName').value;
-//
-//    document.getElementById('submitForm').addEventListener('click', function(e){
-//        var theForm = document.getElementById('company_writer');
-//        var companyName = document.getElementById('companyName').value;
-//        var bossName = document.getElementById('bossName').value;
-//        var companyNum = document.getElementById('companyNum').value;
-//        var phoneNum = document.getElementById('phoneNum').value;
-//        var accountNum = document.getElementById('accountNum').value;
-//        var accountName = document.getElementById('accountName').value;
-//        var outstandingNum = document.getElementById('outstandingNum').value;
-//        var flag = false;
-//        
-//        if(companyName==""||companyName==undefined){
-//            alert("회사명을 입력해주세요.");
-//            return false;
-//        }
-//        
-//        database.ref('/company/').on('value', function(snapshot) {
-//            snapshot.forEach(function(childSnapshot){
-//                var childCompanyName = childSnapshot.val().company_name;
-//                
-//                if(companyName==childCompanyName){
-//                    flag = true;
-//                }
-//            });
-//        });
-//        
-//        if(flag){
-//            alert("같은 이름의 회사가 있습니다.");        
-//            return false;
-//        }
-//        
-//        if(outstandingNum==""||outstandingNum==undefined){
-//            outstandingNum = 0;
-//        }
-//        
-//        writeCompanyDate(companyName, bossName, companyNum, phoneNum, accountNum, accountName, outstandingNum);
-//        document.getElementById('company_writer').reset();
-//        alert("입력한 회사가 추가되었습니다.");
-//        console.log('submitClick');
-//        e.preventDefault();
-//    });
-//    
-
+    
+    var sleep = function(ms){
+        var initial = +new Date()           
+        while(+new Date() < initial + ms){}
+    }
+    
+    var inputItemsKeyWithString = function(companyKey, dataString){
+        var dailyList = dataString.split('|');
+        for(var i = 0; i < dailyList.length; i++){
+            sleep(1000);
+            var item = dailyList[i].split(',');
+            
+            writeDailyDataAutoInput(companyKey,
+                item[0], item[1], item[2],
+                item[3], item[4], item[5],
+                item[6], item[7], item[8],
+                item[9], item[10], item[11],
+                item[12], item[13], item[14],
+                item[15], item[16]);
+        }
+    }
+    
+    var writeDailyDataAutoInput = function(companyKey, date, companyName, ownerName, 
+                                              radishCount, radishPrice, radishTotal, 
+                                              cabbageCount, cabbagePrice, cabbageTotal, 
+                                              etcCount, etcPrice, etcTotal, 
+                                              dailyTotal, outstandingAccout, discount, collect, outstandingTotal) {
+        var dailyTotal = getInt(dailyTotal);
+        if(dailyTotal == 0){
+            console.log("skip data. 일합계 = 0");
+            return;
+        }
         
-    //todo : 회사 검색 클릭시 회사 검색
-//    
-//    document.getElementById('company_list').addEventListener('click', function(e){
-//        
-//    });
-//    //todo : 회사리스트 클릭시 회사별 장부로 이동
-//    function showCompanyDetail(companyKey){
-//        console.log(companyKey);
-//        window.open('./dailyInput.html', '_blank');
-//    }
-//    
-//    function writeCompanyDate(companyName, bossName, companyNum, phoneNum, accountNum, accountName, outstandingNum){
-//        var companyId = database.ref().child('company').push().key;
-//        database.ref('company/' + companyId).set({
-//            company_id: companyId,
-//            company_name: companyName,
-//            boss_name: bossName,
-//            company_num : companyNum,
-//            phone_num : phoneNum,
-//            account_num : accountNum,
-//            account_name : accountName,
-//            outstanding_num : outstandingNum
-//        });        
-//    }
+        var month = date.substring(0, 7);
+        var dailyKey = database.ref().child('daily/' + month).push().key;    
+        
+        database.ref('daily/' + month + '/' + dailyKey).set({
+            date: date,
+            cId: companyKey,
+            cName: companyName,
+            radishCount: getInt(radishCount),
+            radishPrice: getInt(radishPrice),
+            radishTotal: getInt(radishTotal),
+            cabbageCount: getInt(cabbageCount),
+            cabbagePrice: getInt(cabbagePrice),
+            cabbageTotal: getInt(cabbageTotal),
+            etcCount: getInt(etcCount),
+            etcPrice: getInt(etcPrice),
+            etcTotal: getInt(etcTotal),
+            dailyTotal: getInt(dailyTotal),
+            currentOutstandingAccout: getInt(outstandingAccout), // 현재 시점의 전미수
+            discount: getInt(discount), // 할인
+            collect: getInt(collect), // 입금
+            outstandingTotal: getInt(outstandingTotal) // 미수합계. -> 회사 전미술 업데이트 필요.
+        });
+        return false;
+    }
+
+    var firebaseUtil = new FirebaseUtil();
+    var copySnapshotWithMonth = function(month){
+        firebaseUtil.copyFbRecord(
+        database.ref('daily').orderByChild('month').equalTo(month),
+        database.ref('daily/' + month));
+    }
+    
+    var removeSnapshotWithMonth = function(month){
+        firebaseUtil.removeFbRecord(database, 
+        database.ref('daily').orderByChild('month').equalTo(month));
+    }
+    
 </script>
     
 </html>
