@@ -109,7 +109,7 @@
             var childOutstandingNum = childSnapshot.val().outstanding_num;
             
             document.getElementById('company_list').
-            innerHTML += "<tr><td><button onclick='showCompanyDetail(\"" + childKey + "\");'>" + childCompanyName + "</button></td><td>"
+            innerHTML += "<tr><td><button onclick='showCompanyDetail(\"" + childKey + "\");'>" + childCompanyName + "</button></td><td>" //임시로 보려고 넣었었음.<br/><span>" + childKey + "</span>
                 + childBossName + "</td><td>"
                 + childCompanyNum + "</td><td>"
                 + childPhoneNum + "</td><td>"
@@ -215,9 +215,12 @@
         }
 
         var inputItemsKeyWithString = function(companyKey, dataString){
+            if(companyKey == ''){
+                console.log('empty company Key!!');
+                return;
+            }
             var dailyList = dataString.split('|');
             for(var i = 0; i < dailyList.length; i++){
-                sleep(1000);
                 var item = dailyList[i].split(',');
 
                 writeDailyDataAutoInput(companyKey,
@@ -240,11 +243,12 @@
                 console.log("skip data. 일합계 = 0");
                 return;
             }
-
+            sleep(1000);
             var month = date.substring(0, 7);
             var dailyKey = database.ref().child('daily/' + month).push().key;    
 
             database.ref('daily/' + month + '/' + dailyKey).set({
+                month: month,
                 date: date,
                 cId: companyKey,
                 cName: companyName,
