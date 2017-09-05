@@ -15,12 +15,6 @@ function DailyManager(){
         self.dailyManagerCallback = commonDailyManagerCallback;
         firebase.initializeApp(self.config);    
         self.database = firebase.database();
-        var dailyRef = self.database.ref("daily");
-        dailyRef.on('child_removed', function(oldSnapshot){
-            console.log("childRemoved : ");
-            console.log(oldSnapshot.val());
-            self.dailyManagerCallback.removeChild(oldSnapshot.key);
-        });
     }
     
     this.getCompanyList = function (companyListener) {
@@ -46,7 +40,9 @@ function DailyManager(){
     */
     
     this.getDailyData = function(date, dateCallback){
-        self.database.ref("daily").orderByChild("date").equalTo(date)
+        var month = date.substring(0, 7);
+        var dailyRef = self.database.ref("daily/" + month);
+        dailyRef.orderByChild("date").equalTo(date)
             .on('value', function(snapshot){ // todo : on -> once;
                 var dailyList = new Array();
                 snapshot.forEach(function(childSnapshot){
@@ -56,6 +52,12 @@ function DailyManager(){
                 });
                 dateCallback(dailyList);
           });
+        
+        dailyRef.on('child_removed', function(oldSnapshot){
+            console.log("childRemoved : ");
+            console.log(oldSnapshot.val());
+            self.dailyManagerCallback.removeChild(oldSnapshot.key);
+        });
     }
 
     // 월, 날짜 셀렉터에서 가져온다.
@@ -77,9 +79,9 @@ function DailyManager(){
         var discount = daily - (radish + cabbage + etc);
         var month = date.substring(0, 7);
         
-        var dailyKey = self.database.ref().child('daily').push().key;    
-        
-        self.database.ref('daily/' + dailyKey).set({
+        var dailyKey = self.database.ref().child('daily/' + month).push().key;    
+
+        self.database.ref('daily/' + month + '/' + dailyKey).set({
             month: month,
             date: date,
             cId: companyId,
@@ -110,8 +112,8 @@ function DailyManager(){
         self.database.ref('company/' + companyId).update(updates);
     };
     
-    this.removeDailyItem = function(childKey){
-        self.database.ref('daily/' + childKey).remove();
+    this.removeDailyItem = function(month, childKey){
+        self.database.ref('daily/' + month + '/' + childKey).remove();
     };
 }
     

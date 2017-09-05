@@ -22,14 +22,17 @@ var writerViewInit = function(){
         var calculateRadish = function(){
             radishTotal.value = radishCount.value * radishPrice.value;
             calculateTotal();
+            calculateOutstanding();
         };
         var calculateCarbbage = function(){
             cabbageTotal.value = cabbageCount.value * cabbagePrice.value;
             calculateTotal();
+            calculateOutstanding();
         };
         var calculateEtc = function(){
             etcTotal.value = etcCount.value * etcPrice.value;
             calculateTotal();
+            calculateOutstanding();
         };
         var calculateTotal = function(){
             var radish = radishTotal.value == '' ? 0 : parseInt(radishTotal.value);

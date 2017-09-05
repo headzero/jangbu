@@ -165,9 +165,9 @@
         }
     };
     
-    var removeDailyData = function(childKey){
+    var removeDailyData = function(month, childKey){
         if(confirm('삭제하시겠습니까?')){
-            dailyManager.removeDailyItem(childKey);
+            dailyManager.removeDailyItem(month, childKey);
         }
     }
     
@@ -233,7 +233,7 @@
                     + dailyItem.collect + '</td><td>'
                     + dailyItem.outstandingTotal + '</td><td>'
                     + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td><td>'
-                    + '<button onclick=\'removeDailyData("'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
+                    + '<button onclick=\'removeDailyData("' + dailyItem.month + '", "'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
                 sumRadishCount += getInt(dailyItem.radishCount);
                 sumRadishTotal += getInt(dailyItem.radishTotal);
                 sumCabbageCount += getInt(dailyItem.cabbageCount);
