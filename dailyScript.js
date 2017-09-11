@@ -79,7 +79,7 @@ function DailyManager(){
         var discount = daily - (radish + cabbage + etc);
         var month = date.substring(0, 7);
         
-        var dailyKey = self.database.ref().child('daily/' + month).push().key;    
+        var dailyKey = self.database.ref('daily/' + month).push().key;    
 
         self.database.ref('daily/' + month + '/' + dailyKey).set({
             month: month,
@@ -110,6 +110,25 @@ function DailyManager(){
         var updates = {};
         updates['/outstanding_num'] = outstandingTotal;
         self.database.ref('company/' + companyId).update(updates);
+    };
+    
+    this.updateDailyData = function(date, companyId, 
+                                              radishCount, radishPrice, radishTotal, 
+                                              cabbageCount, cabbagePrice, cabbageTotal, 
+                                              etcCount, etcPrice, etcTotal, 
+                                              dailyTotal, outstandingAccout, collect, outstandingTotal, oldOutstandingTotal){
+        var month = date.substring(0, 7);
+        self.database.ref('daily/' + month).orderByChild('cId').equalTo(companyId)
+        .once('value', function(snapshot){
+            var dailyList = new Array();
+            snapshot.forEach(function(childSnapshot){
+                var childData = childSnapshot.val();
+                childData.childKey = childSnapshot.key;
+                dailyList.push(childData);
+            });
+            
+            console.log(dailyList);
+        });
     };
     
     this.removeDailyItem = function(month, childKey){

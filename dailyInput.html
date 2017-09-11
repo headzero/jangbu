@@ -10,10 +10,12 @@
 <body>
 
     <div>
-        
+            
             <label for='datePicker'>날짜 입력 : </label><input class="date" id='datePicker' type='date' name='datePicker'/><br />
             <table class='type08'>
                 <form id='daily_writer'>
+                    <input id='childKeyForUpdate' type='hidden' name='childKey'/>
+                    <input id='oldOutstandingTotal' type='hidden' name='oldOutstandingTotal'/>
                 <thead>
                 <tr>
                     <th scope='cols'>회사명</th>

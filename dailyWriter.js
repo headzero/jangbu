@@ -1,5 +1,6 @@
 var dailyWriterForm = document.getElementById('daily_writer');
 var datePicker = document.getElementById('datePicker');
+var childKeyForUpdate = document.getElementById('childKeyForUpdate');
 var companySelector = document.getElementById('companySelector');
 var companyOwnerName = document.getElementById('companyOwnerName');
 var radishCount = document.getElementById('radishCount');
@@ -17,6 +18,8 @@ var unpaidCheck = document.getElementById('unpaid');
 var collect = document.getElementById('collect');
 var outstandingAccout = document.getElementById('outstandingAccout');
 var outstandingTotal = document.getElementById('outstandingTotal');
+var oldOutstandingTotal = document.getElementById('oldOutstandingTotal');
+
 
 var writerViewInit = function(){
         var calculateRadish = function(){
@@ -121,11 +124,19 @@ var writerViewInit = function(){
         document.getElementById('submitForm').addEventListener('click', function(e){
             e.preventDefault();
             console.log(currentDailyList);
+            
+            // 이 위로는 공통 체크. 아래는 update/write에 따른 분기.
+            if(childKeyForUpdate.value != ''){
+                console.log("isUpdate");
+                updateForm();   
+                return;
+            }
+            
             if(companySelector.value == ''){
                 alert('회사를 선택하세요');
                 return;
             }
-            var companySelectorChilds = companySelector.children;
+            
             for (var i = 0; i < currentDailyList.length; i++){
                 if(companySelector.value == currentDailyList[i].cId){
                     alert("오늘 거래내역이 이미 있습니다.")
@@ -133,27 +144,38 @@ var writerViewInit = function(){
                 }
             }
             
-            if(dailyTotal.value == '' || dailyTotal.value == 0){
-                alert("일 합계가 0원 입니다.")
-                return;
-            }
             
+            
+            writeForm();
+            resetAllForms();
+        });
+    
+        var writeForm = function(){
+            var companySelectorChilds = companySelector.children;
             dailyManager.writeDailyDataCalculated(datePicker.value, companySelector.value, companySelectorChilds[companySelector.selectedIndex].innerHTML, companyOwnerName.value,
                                                  radishCount.value, radishPrice.value, radishTotal.value,
                                                  cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
                                                  etcCount.value, etcPrice.value, etcTotal.value,
                                                  dailyTotal.value, outstandingAccout.value, collect.value, outstandingTotal.value);
-            resetAllForms();
-        });
+        };
+    
+        var updateForm = function(){
+            dailyManager.updateDailyData(
+                datePicker.value, companySelector.value, // cId
+                radishCount.value, radishPrice.value, radishTotal.value,
+                cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
+                etcCount.value, etcPrice.value, etcTotal.value,
+                dailyTotal.value, outstandingAccout.value, collect.value, outstandingTotal.value, oldOutstandingTotal.value);
+        }
         
     };
 
 var setUpdateForm = function (currentDailyItem, companyItem){
     console.log(currentDailyItem);
-    var currentItemKey = currentDailyItem.childKey;
+    childKeyForUpdate.value = currentDailyItem.childKey;
     datePicker.value = currentDailyItem.date;
     companySelector.value = currentDailyItem.cId;
-    companySelector.disabled = true; // todo : restore
+    companySelector.disabled = true;
     companyOwnerName.value = (companyItem == undefined)? '' : companyItem.boss_name;
     radishCount.value = currentDailyItem.radishCount;
     radishPrice.value = currentDailyItem.radishPrice;
@@ -168,5 +190,6 @@ var setUpdateForm = function (currentDailyItem, companyItem){
     collect.value = currentDailyItem.collect;
     outstandingAccout.value = currentDailyItem.currentOutstandingAccout;
     outstandingTotal.value = currentDailyItem.outstandingTotal;
+    oldOutstandingTotal.value = currentDailyItem.outstandingTotal;
     // todo : 저장 할 때는 현재 선택된 키를 사용할 수 있도록 수정..
 }
