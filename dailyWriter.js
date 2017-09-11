@@ -49,10 +49,15 @@ var writerViewInit = function(){
             var collectValue = collect.value == '' ? 0 : parseInt(collect.value);
             outstandingTotal.value = dailyTotalValue + outstandingValue - collectValue;
         };
+    
+        var resetAllForms = function(){
+            dailyWriterForm.reset(); 
+            companySelector.disabled = false;
+        };
         
         datePicker.valueAsDate = new Date();
         dailyTotal.disabled = true;
-        // todo 복구필요 -> outstandingAccout.disabled = true;
+        outstandingAccout.disabled = true;
         outstandingTotal.disabled = true;
         
         companySelector.addEventListener('change', function(){
@@ -108,8 +113,8 @@ var writerViewInit = function(){
         });
         
         document.getElementById('clearForm').addEventListener('click', function(e){
-            if(confirm('입력 내용을 지우시겠습니까?')){
-                dailyWriterForm.reset();    
+            if(confirm('입력 내용을 지우시겠습니까?')){  
+                resetAllForms();
             }
             e.preventDefault();
         });
@@ -138,7 +143,7 @@ var writerViewInit = function(){
                                                  cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
                                                  etcCount.value, etcPrice.value, etcTotal.value,
                                                  dailyTotal.value, outstandingAccout.value, collect.value, outstandingTotal.value);
-            dailyWriterForm.reset();
+            resetAllForms();
         });
         
     };
