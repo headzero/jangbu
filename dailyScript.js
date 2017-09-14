@@ -27,17 +27,6 @@ function DailyManager(){
             companyListener(companyList);    
         });
     }
-    /*   'value' 는 모든 데이터, 'child_added'는 추가되는 데이터.
-     // child_changed 이벤트는 하위 노드가 수정될 때마다 발생
-     // child_removed 이벤트는 바로 아래 하위 항목이 삭제될 때 발생
-     
-    ref.on("child_added", function(snapshot, prevChildKey) {
-      var newPost = snapshot.val();
-      console.log("Author: " + newPost.author);
-      console.log("Title: " + newPost.title);
-      console.log("Previous Post ID: " + prevChildKey);
-    });
-    */
     
     this.getDailyData = function(date, dateCallback){
         var month = date.substring(0, 7);
@@ -65,8 +54,6 @@ function DailyManager(){
     // 회사 && 날짜 의 경우 중복으로 예외처리를 할 수 있도록 한다.
     // companydata from companyId;
         // company list . get cId;
-    
-    
     this.writeDailyDataCalculated = function(date, companyId, companyName, ownerName, 
                                               radishCount, radishPrice, radishTotal, 
                                               cabbageCount, cabbagePrice, cabbageTotal, 
@@ -176,8 +163,14 @@ function DailyManager(){
         });
     };
     
-    this.removeDailyItem = function(month, childKey){
-        self.database.ref('daily/' + month + '/' + childKey).remove();
+    this.removeDailyItem = function(month, targetDailyItem){
+        var outstandingAccount = targetDailyItem.currentOutstandingAccout; // 해당 아이템의 전 미수.
+        var currentOutstandingTotal = targetDailyItem.outstandingTotal; // 해당 아이템의 미수금.
+        var diff = currentOutstandingTotal - outstandingAccount;
+        var ref = self.database.ref('daily/' + targetDailyItem.month);
+        self.updateNextDaysOutstanding(ref, targetDailyItem.cId, targetDailyItem.date, diff, outstandingTotal);
+        
+        self.database.ref('daily/' + month + '/' + targetDailyItem.childKey).remove();
     };
 }
     

@@ -169,7 +169,19 @@
     
     var removeDailyData = function(month, childKey){
         if(confirm('삭제하시겠습니까?')){
-            dailyManager.removeDailyItem(month, childKey);
+            var len = currentDailyList.length;
+            var targetDailyItem;
+            for(var i = 0; i < len; i++){
+                if(currentDailyList[i].childKey == childKey){
+                    targetDailyItem = currentDailyList[i];
+                    break;
+                }
+            }
+            if(targetDailyItem == undefined){
+                alert('해당 데이터를 찾지 못했습니다. 페이지 리로드를 해 주세요');
+                return;
+            }
+            dailyManager.removeDailyItem(month, targetDailyItem);
         }
     }
     
@@ -264,6 +276,7 @@
     
     function DailyCommonCallback(){
         this.removeChild = function(childKey){
+            console.log('eventRemoveChild');
             var removeItem = document.getElementById(childKey);
             if(removeItem != null){
                 removeItem.parentElement.removeChild(removeItem);    
@@ -273,10 +286,10 @@
             for(var i = 0; i < len; i++){
                 if(currentDailyList[i].childKey == childKey){
                     currentDailyList.splice(i, 1);
+                    alert("삭제완료");
                     break;
                 }
             }
-            alert("삭제완료");
         }
     }
     
