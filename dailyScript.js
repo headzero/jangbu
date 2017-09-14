@@ -67,8 +67,7 @@ function DailyManager(){
         var month = date.substring(0, 7);
         
         var dailyKey = self.database.ref('daily/' + month).push().key;    
-
-        self.database.ref('daily/' + month + '/' + dailyKey).set({
+        var targetDailyItem = {
             month: month,
             date: date,
             cId: companyId,
@@ -87,16 +86,16 @@ function DailyManager(){
             discount: discount, // 할인
             collect: collect, // 입금
             outstandingTotal: outstandingTotal // 미수합계. -> 회사 전미술 업데이트 필요.
-        });
-
-        self.updateCompanyOutstandingTotal(companyId, outstandingTotal);
+        };
+        self.database.ref('daily/' + month + '/' + dailyKey).set(targetDailyItem);
+        
+        self.updateOutstandingFromDailyItem(targetDailyItem);
         return false;
     }
     
-    this.updateCompanyOutstandingTotal = function(companyId, outstandingTotal){
-        var updates = {};
-        updates['/outstanding_num'] = outstandingTotal;
-        self.database.ref('company/' + companyId).update(updates);
+    this.removeDailyItem = function(month, targetDailyItem){
+        self.updateOutstandingFromDailyItem(targetDailyItem);
+        self.database.ref('daily/' + month + '/' + targetDailyItem.childKey).remove();
     };
     
     this.updateDailyData = function(childKey, date, companyId, 
@@ -131,6 +130,16 @@ function DailyManager(){
         self.updateNextDaysOutstanding(ref, companyId, date, diff, outstandingTotal);
     };
     
+    // 글 삭제시, 새 글 작성시 전체 전미수 금액을 맞춰주기 위한 용도.
+    this.updateOutstandingFromDailyItem = function(targetDailyItem){
+        var outstandingAccount = targetDailyItem.currentOutstandingAccout; // 해당 아이템의 전 미수.
+        var currentOutstandingTotal = targetDailyItem.outstandingTotal; // 해당 아이템의 미수금.
+        var diff = currentOutstandingTotal - outstandingAccount;
+        var ref = self.database.ref('daily/' + targetDailyItem.month);
+        self.updateNextDaysOutstanding(ref, targetDailyItem.cId, targetDailyItem.date, diff, currentOutstandingTotal);
+        
+    };
+    
     // diff만큼 이후 날짜의 전미수, 미수합계를 조정한다.
     // lastOutstandingTotal : 오늘날짜가 마지막인경우 그값을 그대로 사용, 뒤에 다른날짜가 있다면 변경됨.
     this.updateNextDaysOutstanding = function(ref, companyId, updatedDate, diff, lastOutstandingTotal){
@@ -153,27 +162,18 @@ function DailyManager(){
                     updateObject[dailyItem.childKey+'/currentOutstandingAccout'] = getInt(dailyItem.currentOutstandingAccout) + diff;
                 }
             }
-            
+            ref.update(updateObject);
             // 회사의 미수금액 업데이트.
             self.updateCompanyOutstandingTotal(companyId, lastOutstandingTotal);    
-            
-            ref.update(updateObject, function(ev){
-                alert('목록 업데이트 완료');
-            });
         });
     };
     
-    this.removeDailyItem = function(month, targetDailyItem){
-        var outstandingAccount = targetDailyItem.currentOutstandingAccout; // 해당 아이템의 전 미수.
-        var currentOutstandingTotal = targetDailyItem.outstandingTotal; // 해당 아이템의 미수금.
-        var diff = currentOutstandingTotal - outstandingAccount;
-        var ref = self.database.ref('daily/' + targetDailyItem.month);
-        self.updateNextDaysOutstanding(ref, targetDailyItem.cId, targetDailyItem.date, diff, outstandingTotal);
-        
-        self.database.ref('daily/' + month + '/' + targetDailyItem.childKey).remove();
+    this.updateCompanyOutstandingTotal = function(companyId, outstandingTotal){
+        var updates = {};
+        updates['/outstanding_num'] = outstandingTotal;
+        self.database.ref('company/' + companyId).update(updates);
     };
-}
     
-    // todo : 업데이트 데이터.
-
-    // todo : search from month || 회사명 || 날짜 범위.
+}
+// todo : 이전 날짜에 전미수 값을 사용할 수 있는 방법???
+// todo : search from month || 회사명 || 날짜 범위.
