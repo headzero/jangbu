@@ -182,6 +182,7 @@
     
     var currentCompanyList;
     var currentDailyList;
+    var lastLoadedDate;
     
     var commonDailyManagerCallback = new DailyCommonCallback();
     
@@ -206,7 +207,7 @@
     var loadDailyDataFrom = function(date){
         dailyManager.getDailyData(date, function(dailyList){ 
             currentDailyList = dailyList;
-            console.log(dailyList);
+            lastLoadedDate = date;
             var sumRadishCount = 0;
             var sumRadishTotal = 0;
             var sumCabbageCount = 0;

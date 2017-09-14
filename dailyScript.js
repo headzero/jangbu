@@ -72,10 +72,10 @@ function DailyManager(){
                                               cabbageCount, cabbagePrice, cabbageTotal, 
                                               etcCount, etcPrice, etcTotal, 
                                               dailyTotal, outstandingAccout, collect, outstandingTotal) {
-        var daily = dailyTotal == '' ? 0 : parseInt(dailyTotal);
-        var radish = radishTotal == '' ? 0 : parseInt(radishTotal);
-        var cabbage = cabbageTotal == '' ? 0 : parseInt(cabbageTotal);
-        var etc = etcTotal == '' ? 0 : parseInt(etcTotal);
+        var daily = getInt(dailyTotal);//dailyTotal == '' ? 0 : parseInt(dailyTotal);
+        var radish = getInt(radishTotal);//radishTotal == '' ? 0 : parseInt(radishTotal);
+        var cabbage = getInt(cabbageTotal);//cabbageTotal == '' ? 0 : parseInt(cabbageTotal);
+        var etc = getInt(etcTotal);//etcTotal == '' ? 0 : parseInt(etcTotal);
         var discount = daily - (radish + cabbage + etc);
         var month = date.substring(0, 7);
         
@@ -112,13 +112,42 @@ function DailyManager(){
         self.database.ref('company/' + companyId).update(updates);
     };
     
-    this.updateDailyData = function(date, companyId, 
+    this.updateDailyData = function(childKey, date, companyId, 
                                               radishCount, radishPrice, radishTotal, 
                                               cabbageCount, cabbagePrice, cabbageTotal, 
                                               etcCount, etcPrice, etcTotal, 
                                               dailyTotal, outstandingAccout, collect, outstandingTotal, oldOutstandingTotal){
+        var discount = getInt(dailyTotal) - (getInt(radishTotal) + getInt(cabbageTotal) + getInt(etcTotal));
         var month = date.substring(0, 7);
-        self.database.ref('daily/' + month).orderByChild('cId').equalTo(companyId)
+        var ref = self.database.ref('daily/' + month);
+        ref.child(childKey).update({
+                month: month,
+                date: date,
+                cId: companyId,
+                radishCount: radishCount,
+                radishPrice: radishPrice,
+                radishTotal: radishTotal,
+                cabbageCount: cabbageCount,
+                cabbagePrice: cabbagePrice,
+                cabbageTotal: cabbageTotal,
+                etcCount: etcCount,
+                etcPrice: etcPrice,
+                etcTotal: etcTotal,
+                dailyTotal: dailyTotal,
+                currentOutstandingAccout: outstandingAccout, // 현재 시점의 전미수
+                discount: discount, // 할인
+                collect: collect, // 입금
+                outstandingTotal: outstandingTotal // 미수합계. -> 회사 전미술 업데이트 필요.
+            });
+        
+        var diff = outstandingTotal - oldOutstandingTotal; // 수정후 - 수정전
+        self.updateNextDaysOutstanding(ref, companyId, date, diff, outstandingTotal);
+    };
+    
+    // diff만큼 이후 날짜의 전미수, 미수합계를 조정한다.
+    // lastOutstandingTotal : 오늘날짜가 마지막인경우 그값을 그대로 사용, 뒤에 다른날짜가 있다면 변경됨.
+    this.updateNextDaysOutstanding = function(ref, companyId, updatedDate, diff, lastOutstandingTotal){
+        ref.orderByChild('cId').equalTo(companyId)
         .once('value', function(snapshot){
             var dailyList = new Array();
             snapshot.forEach(function(childSnapshot){
@@ -127,7 +156,23 @@ function DailyManager(){
                 dailyList.push(childData);
             });
             
-            console.log(dailyList);
+            var updateObject = {};
+            var updateCompanyFlag = false;
+            for(var i = 0; i < dailyList.length; i++){
+                var dailyItem = dailyList[i];
+                if(dailyItem.date > updatedDate){
+                    lastOutstandingTotal = getInt(dailyItem.outstandingTotal) + diff;
+                    updateObject[dailyItem.childKey+'/outstandingTotal'] = lastOutstandingTotal;
+                    updateObject[dailyItem.childKey+'/currentOutstandingAccout'] = getInt(dailyItem.currentOutstandingAccout) + diff;
+                }
+            }
+            
+            // 회사의 미수금액 업데이트.
+            self.updateCompanyOutstandingTotal(companyId, lastOutstandingTotal);    
+            
+            ref.update(updateObject, function(ev){
+                alert('목록 업데이트 완료');
+            });
         });
     };
     

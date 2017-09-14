@@ -137,14 +137,14 @@ var writerViewInit = function(){
                 return;
             }
             
-            for (var i = 0; i < currentDailyList.length; i++){
-                if(companySelector.value == currentDailyList[i].cId){
-                    alert("오늘 거래내역이 이미 있습니다.")
-                    return;
+            if(datePicker.value == lastLoadedDate){
+                for (var i = 0; i < currentDailyList.length; i++){
+                    if(companySelector.value == currentDailyList[i].cId){
+                        alert("오늘 거래내역이 이미 있습니다.")
+                        return;
+                    }
                 }
             }
-            
-            
             
             writeForm();
             resetAllForms();
@@ -161,7 +161,7 @@ var writerViewInit = function(){
     
         var updateForm = function(){
             dailyManager.updateDailyData(
-                datePicker.value, companySelector.value, // cId
+                childKeyForUpdate.value, datePicker.value, companySelector.value, // cId
                 radishCount.value, radishPrice.value, radishTotal.value,
                 cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
                 etcCount.value, etcPrice.value, etcTotal.value,
