@@ -20,45 +20,71 @@ var outstandingAccout = document.getElementById('outstandingAccout');
 var outstandingTotal = document.getElementById('outstandingTotal');
 var oldOutstandingTotal = document.getElementById('oldOutstandingTotal');
 
+var calcRadishTotal = 0;
+var calcCarbbageTotal = 0;
+var calcEtcTotal = 0;
+var calcTotal = 0;
+var calcOutstandingTotal = 0;
+var calcOldOutstanding = 0;
 
 var writerViewInit = function(){
-        var calculateRadish = function(){
-            radishTotal.value = radishCount.value * radishPrice.value;
+
+    var calculateRadish = function(){
+            calcRadishTotal = radishCount.value * radishPrice.value;
+            radishTotal.value = comma(calcRadishTotal);
             calculateTotal();
             calculateOutstanding();
         };
         var calculateCarbbage = function(){
-            cabbageTotal.value = cabbageCount.value * cabbagePrice.value;
+            calcCarbbageTotal = cabbageCount.value * cabbagePrice.value;
+            cabbageTotal.value = comma(calcCarbbageTotal);
             calculateTotal();
             calculateOutstanding();
         };
         var calculateEtc = function(){
-            etcTotal.value = etcCount.value * etcPrice.value;
+            calcEtcTotal = etcCount.value * etcPrice.value;
+            etcTotal.value = comma(calcEtcTotal);
             calculateTotal();
             calculateOutstanding();
         };
         var calculateTotal = function(){
-            var radish = radishTotal.value == '' ? 0 : parseInt(radishTotal.value);
-            var cabbage = cabbageTotal.value == '' ? 0 : parseInt(cabbageTotal.value);
-            var etc = etcTotal.value == '' ? 0 : parseInt(etcTotal.value);
-            dailyTotal.value = radish + cabbage + etc;
+            var radish = radishTotal.value == '' ? 0 : parseInt(calcRadishTotal);
+            var cabbage = cabbageTotal.value == '' ? 0 : parseInt(calcCarbbageTotal);
+            var etc = etcTotal.value == '' ? 0 : parseInt(calcEtcTotal);
+            calcTotal = radish + cabbage + etc;
+            dailyTotal.value = comma(calcTotal);
+            
             if(!unpaidCheck.checked){
-                collect.value = dailyTotal.value;    
+                collect.value = calcTotal;    
             }
         };
         var calculateOutstanding = function(){
-            var dailyTotalValue = dailyTotal.value == '' ? 0 : parseInt(dailyTotal.value);
-            var outstandingValue = outstandingAccout.value == '' ? 0 : parseInt(outstandingAccout.value);
+            var dailyTotalValue = calcTotal;
+            var outstandingValue = calcOldOutstanding;
             var collectValue = collect.value == '' ? 0 : parseInt(collect.value);
-            outstandingTotal.value = dailyTotalValue + outstandingValue - collectValue;
+            calcOutstandingTotal = parseInt(dailyTotalValue) + parseInt(outstandingValue) - collectValue;
+            outstandingTotal.value = comma(calcOutstandingTotal);
         };
     
         var resetAllForms = function(){
-            dailyWriterForm.reset(); 
+            dailyWriterForm.reset();
             companySelector.disabled = false;
+            companySelector.value = '';
+            childKeyForUpdate.value = '';
+            oldOutstandingTotal.value = 0;
+            calcRadishTotal = 0;
+            calcRadishTotal = 0;
+            calcCarbbageTotal = 0;
+            calcEtcTotal = 0;
+            calcTotal = 0;
+            calcOutstandingTotal = 0;
+            calcOldOutstanding = 0;
         };
         
         datePicker.valueAsDate = new Date();
+        radishTotal.disabled = true;
+        cabbageTotal.disabled = true;
+        etcTotal.disabled = true;
         dailyTotal.disabled = true;
         outstandingAccout.disabled = true;
         outstandingTotal.disabled = true;
@@ -71,7 +97,9 @@ var writerViewInit = function(){
                     var company = window.currentCompanyList[i];
                     if(currentItemKey == company.company_id){
                         companyOwnerName.value = company.boss_name;
-                        outstandingAccout.value = company.outstanding_num;
+                        calcOldOutstanding = company.outstanding_num;
+                        outstandingAccout.value = comma(calcOldOutstanding);
+                        outstandingTotal.value = comma(calcOldOutstanding);
                         break;
                     }
                 }
@@ -90,10 +118,11 @@ var writerViewInit = function(){
         collect.addEventListener('keyup', calculateOutstanding);
         discountHundred.addEventListener('change', function(){
            if(this.checked){
-               var currentTotal = dailyTotal.value == '' ? 0 : parseInt(dailyTotal.value);
-               dailyTotal.value = currentTotal - (currentTotal % 1000);
+               var currentTotal = calcTotal;
+               calcTotal = currentTotal - (currentTotal % 1000);
+               dailyTotal.value = comma(calcTotal);
                if(!unpaidCheck.checked){
-                    collect.value = dailyTotal.value;    
+                    collect.value = rm_comma(dailyTotal.value);    
                 }
            } else {
                calculateTotal();
@@ -105,7 +134,7 @@ var writerViewInit = function(){
                 collect.disabled = true;
                 collect.blur = true;
             } else {
-                collect.value = dailyTotal.value;
+                collect.value = rm_comma(dailyTotal.value);
                 collect.disabled = false;
                 collect.blur = false;
             }
@@ -124,15 +153,17 @@ var writerViewInit = function(){
         document.getElementById('submitForm').addEventListener('click', function(e){
             e.preventDefault();
             console.log(currentDailyList);
+            console.log(companySelector.value);
             
             // 이 위로는 공통 체크. 아래는 update/write에 따른 분기.
             if(childKeyForUpdate.value != ''){
                 console.log("isUpdate");
-                updateForm();   
+                updateForm(); 
+                resetAllForms();
                 return;
             }
             
-            if(companySelector.value == ''){
+            if(companySelector.value == ""){
                 alert('회사를 선택하세요');
                 return;
             }
@@ -153,19 +184,19 @@ var writerViewInit = function(){
         var writeForm = function(){
             var companySelectorChilds = companySelector.children;
             dailyManager.writeDailyDataCalculated(datePicker.value, companySelector.value, companySelectorChilds[companySelector.selectedIndex].innerHTML, companyOwnerName.value,
-                                                 radishCount.value, radishPrice.value, radishTotal.value,
-                                                 cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
-                                                 etcCount.value, etcPrice.value, etcTotal.value,
-                                                 dailyTotal.value, outstandingAccout.value, collect.value, outstandingTotal.value);
+                                                 radishCount.value, radishPrice.value, calcRadishTotal,
+                                                 cabbageCount.value, cabbagePrice.value, calcCarbbageTotal,
+                                                 etcCount.value, etcPrice.value, calcEtcTotal,
+                                                 calcTotal, calcOldOutstanding, collect.value, calcOutstandingTotal);
         };
     
         var updateForm = function(){
             dailyManager.updateDailyData(
                 childKeyForUpdate.value, datePicker.value, companySelector.value, // cId
-                radishCount.value, radishPrice.value, radishTotal.value,
-                cabbageCount.value, cabbagePrice.value, cabbageTotal.value,
-                etcCount.value, etcPrice.value, etcTotal.value,
-                dailyTotal.value, outstandingAccout.value, collect.value, outstandingTotal.value, oldOutstandingTotal.value);
+                radishCount.value, radishPrice.value, calcRadishTotal,
+                cabbageCount.value, cabbagePrice.value, calcCarbbageTotal,
+                etcCount.value, etcPrice.value, calcEtcTotal,
+                calcTotal, calcOldOutstanding, collect.value, calcOutstandingTotal, oldOutstandingTotal.value);
         }
         
     };
@@ -191,5 +222,34 @@ var setUpdateForm = function (currentDailyItem, companyItem){
     outstandingAccout.value = currentDailyItem.currentOutstandingAccout;
     outstandingTotal.value = currentDailyItem.outstandingTotal;
     oldOutstandingTotal.value = currentDailyItem.outstandingTotal;
+    calcRadishTotal = currentDailyItem.radishTotal;
+    calcCarbbageTotal = currentDailyItem.cabbageTotal;
+    calcEtcTotal = currentDailyItem.etcTotal;
+    calcTotal = currentDailyItem.dailyTotal;
+    calcOutstandingTotal = currentDailyItem.outstandingTotal;
+    calcOldOutstanding = currentDailyItem.currentOutstandingAccout;
     // todo : 저장 할 때는 현재 선택된 키를 사용할 수 있도록 수정..
+}
+
+function comma(num){
+   var len, point, str;
+
+   num = num + "";
+   point = num.length % 3 ;
+   len = num.length;
+
+   str = num.substring(0, point);
+   while (point < len) {
+      if (str != "") str += ",";
+      str += num.substring(point, point + 3);
+      point += 3;
+   }
+
+   return str;
+}
+
+//콤마 삭제
+function rm_comma(num){
+   var number = num + "";
+   return number.replace(",","");
 }

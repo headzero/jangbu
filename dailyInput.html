@@ -64,18 +64,18 @@
                     </td>
                     <td colspan='2'>
                         <span>무 합계 : </span>
-                        <input id='radishTotal' type='number' />
+                        <input id='radishTotal' type='text' />
                     </td>
                     <td colspan='2'>
                         <span>양배추 합계 : </span>
-                        <input id='cabbageTotal' type='number' />
+                        <input id='cabbageTotal' type='text' />
                     </td>
                     <td colspan='2'>
                         <span>기타 합계 : </span>
-                        <input id='etcTotal' type='number' />
+                        <input id='etcTotal' type='text' />
                     </td>
                     <td>
-                        <input id='dailyTotal' type='number' />
+                        <input id='dailyTotal' type='text' />
                     </td>
                 </tr>
                 <tr>
@@ -90,11 +90,11 @@
                     <td></td>
                     <td colspan='2'>
                         <span>전미수 : </span>
-                        <input id='outstandingAccout' type='number' />
+                        <input id='outstandingAccout' type='text' />
                     </td>
                     <td colspan='2'>
                         <span>미수 합계 : </span>
-                        <input id='outstandingTotal' type='number' />
+                        <input id='outstandingTotal' type='text' />
                     </td>
                 </tr>
                 <tr>
@@ -102,7 +102,7 @@
                         <button id='clearForm'>지우기</button>
                     </td>
                     <td colspan='7'>
-                        <button id='submitForm'>저장</button>
+                        <button id='submitForm' style="width: 116px; height: 56px">저장</button>
                     </td>
                 </tr>
                 </tbody>
@@ -236,17 +236,17 @@
                 var dailyItem = dailyList[i];
                 dailyResultString += '<tr id=\'' + dailyItem.childKey + '\'><td>' 
                     + dailyItem.cName + '</td><td>'
-                    + '<span class=\'item_count\'>' + dailyItem.radishCount + '</span> '
-                    + dailyItem.radishTotal + '</td><td>'
-                    + '<span class=\'item_count\'>' + dailyItem.cabbageCount + '</span> '
-                    + dailyItem.cabbageTotal + '</td><td>'
-                    + '<span class=\'item_count\'>' + dailyItem.etcCount + '</span> '
-                    + dailyItem.etcTotal + '</td><td>'
+                    + '<span class=\'item_count\'>' + comma(dailyItem.radishCount) + '</span> '
+                    + comma(dailyItem.radishTotal) + '</td><td>'
+                    + '<span class=\'item_count\'>' + comma(dailyItem.cabbageCount) + '</span> '
+                    + comma(dailyItem.cabbageTotal) + '</td><td>'
+                    + '<span class=\'item_count\'>' + comma(dailyItem.etcCount) + '</span> '
+                    + comma(dailyItem.etcTotal) + '</td><td>'
                     + dailyItem.discount + '</td><td>'
-                    + dailyItem.dailyTotal + '</td><td>'
-                    + dailyItem.currentOutstandingAccout + '</td><td>'
-                    + dailyItem.collect + '</td><td>'
-                    + dailyItem.outstandingTotal + '</td><td>'
+                    + comma(dailyItem.dailyTotal) + '</td><td>'
+                    + comma(dailyItem.currentOutstandingAccout) + '</td><td>'
+                    + comma(dailyItem.collect) + '</td><td>'
+                    + comma(dailyItem.outstandingTotal) + '</td><td>'
                     + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td><td>'
                     + '<button onclick=\'removeDailyData("' + dailyItem.month + '", "'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
                 sumRadishCount += getInt(dailyItem.radishCount);
@@ -260,15 +260,15 @@
                 sumCollect += getInt(dailyItem.collect);
             }
             dailyResultString += '<tr><td>합계</td><td>'
-                + '<span class=\'item_count\'>' + sumRadishCount + '</span> '
-                + sumRadishTotal + '</td><td>'
-                + '<span class=\'item_count\'>' + sumCabbageCount + '</span> '
-                + sumCabbageTotal + '</td><td>'
-                + '<span class=\'item_count\'>' + sumEtcCount + '</span> '
-                + sumEtcTotal + '</td><td>'
-                + sumDiscountTotal + '</td><td>'
-                + sumDailyTotal + '</td><td></td><td>'
-                + sumCollect + '</td><td></td><td></td><td></td></tr>';
+                + '<span class=\'item_count\'>' + comma(sumRadishCount) + '</span> '
+                + comma(sumRadishTotal) + '</td><td>'
+                + '<span class=\'item_count\'>' + comma(sumCabbageCount) + '</span> '
+                + comma(sumCabbageTotal) + '</td><td>'
+                + '<span class=\'item_count\'>' + comma(sumEtcCount) + '</span> '
+                + comma(sumEtcTotal) + '</td><td>'
+                + comma(sumDiscountTotal) + '</td><td>'
+                + comma(sumDailyTotal) + '</td><td></td><td>'
+                + comma(sumCollect) + '</td><td></td><td></td><td></td></tr>';
             dailyResultBody.innerHTML = dailyResultString;
         });
     }

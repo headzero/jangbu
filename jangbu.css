@@ -7,7 +7,7 @@ table.type08 {
 }
 
 table.type08 thead th {
-    padding: 5px;
+    padding: 1px;
     font-weight: bold;
     border-top: 1px solid #ccc;
     border-right: 1px solid #ccc;
@@ -16,8 +16,8 @@ table.type08 thead th {
 }
 
 table.type08 tbody th {
-    width: 100px;
-    padding: 5px;
+    width: 130px;
+    padding: 1px;
     font-weight: bold;
     vertical-align: top;
     border-right: 1px solid #ccc;
@@ -26,8 +26,8 @@ table.type08 tbody th {
 }
 
 table.type08 td {
-    width: 100px;
-    padding: 5px;
+    width: 130px;
+    padding: 1px;
     vertical-align: top;
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
@@ -39,7 +39,7 @@ table.type08 label {
 }
 
 input {
-    width:80px;
+    width:120px;
     height: 30px;
     font-size: 15px;
     font-weight: bold;
