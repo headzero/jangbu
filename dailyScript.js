@@ -168,7 +168,8 @@ function DailyManager(){
             }
             ref.update(updateObject);
             // 회사의 미수금액 업데이트.
-            var updateValue = (updateCompanyFlag ? lastOutstandingTotal : lastOutstandingTotal + diff);
+            var updateValue = lastOutstandingTotal; // 수정, 새로 글 작성시에는 변경없음. 
+            // 삭제를 할 때만 diff값을 처리함. (updateCompanyFlag ? lastOutstandingTotal : lastOutstandingTotal + diff);
             console.log("update to compan : " + updateValue + " / " + diff);
             self.updateCompanyOutstandingTotal(companyId, updateValue);    
         });
