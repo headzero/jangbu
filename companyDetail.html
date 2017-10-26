@@ -233,6 +233,9 @@
                     childData.childKey = childSnapshot.key;
                     dailyList.push(childData);
                 });
+                dailyList.sort(function(a, b) { // 오름차순
+                    return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+                });
                 showCompanyDailyDetail(dailyList);
         });    
     }

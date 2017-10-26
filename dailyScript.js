@@ -134,7 +134,7 @@ function DailyManager(){
     this.updateOutstandingFromDailyItem = function(targetDailyItem){
         var outstandingAccount = targetDailyItem.currentOutstandingAccout; // 해당 아이템의 전 미수.
         var currentOutstandingTotal = targetDailyItem.outstandingTotal; // 해당 아이템의 미수금.
-        var diff = currentOutstandingTotal - outstandingAccount;
+        var diff = outstandingAccount - currentOutstandingTotal;
         var ref = self.database.ref('daily/' + targetDailyItem.month);
         self.updateNextDaysOutstanding(ref, targetDailyItem.cId, targetDailyItem.date, diff, currentOutstandingTotal);
         
@@ -152,11 +152,15 @@ function DailyManager(){
                 dailyList.push(childData);
             });
             
+            dailyList.sort(function(a, b) { // 오름차순
+                    return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+                });
             var updateObject = {};
             var updateCompanyFlag = false;
             for(var i = 0; i < dailyList.length; i++){
                 var dailyItem = dailyList[i];
                 if(dailyItem.date > updatedDate){
+                    updateCompanyFlag = true;
                     lastOutstandingTotal = getInt(dailyItem.outstandingTotal) + diff;
                     updateObject[dailyItem.childKey+'/outstandingTotal'] = lastOutstandingTotal;
                     updateObject[dailyItem.childKey+'/currentOutstandingAccout'] = getInt(dailyItem.currentOutstandingAccout) + diff;
@@ -164,7 +168,9 @@ function DailyManager(){
             }
             ref.update(updateObject);
             // 회사의 미수금액 업데이트.
-            self.updateCompanyOutstandingTotal(companyId, lastOutstandingTotal);    
+            var updateValue = (updateCompanyFlag ? lastOutstandingTotal : lastOutstandingTotal + diff);
+            console.log("update to compan : " + updateValue + " / " + diff);
+            self.updateCompanyOutstandingTotal(companyId, updateValue);    
         });
     };
     
