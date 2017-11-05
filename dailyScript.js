@@ -24,6 +24,9 @@ function DailyManager() {
             snapshot.forEach(function (childSnapshot) {
                 companyList.push(childSnapshot.val());
             });
+            companyList.sort(function (a, b) { // 내림차순
+                return a.company_name < b.company_name ? -1 : a.company_name > b.company_name ? 1 : 0;
+            });
             companyListener(companyList);
         });
     }
