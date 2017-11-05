@@ -90,6 +90,24 @@ var writerViewInit = function () {
     outstandingAccout.disabled = true;
     outstandingTotal.disabled = true;
 
+    datePicker.addEventListener('change', function () {
+        if (inputTargetDailyItemList == undefined || companySelector.value == "") {
+            return;
+        }
+        var lastOutstandingAccount;
+        for (var i = 0; i < currentCompanyList.length; i++) {
+            if (currentCompanyList[i].company_id == companySelector.value) {
+                lastOutstandingAccount = currentCompanyList[i].outstanding_num;
+                break;
+            }
+        }
+        if (lastOutstandingAccount == undefined) {
+            return;
+        }
+
+        findLastOutstanding(inputTargetDailyItemList, datePicker.value, lastOutstandingAccount);
+
+    });
     companySelector.addEventListener('change', function () {
         var currentItemKey = this.options[this.selectedIndex].value;
         if (currentItemKey != '') {
@@ -106,8 +124,11 @@ var writerViewInit = function () {
     });
 
     var lastOutstandingCallback = function (dailyList, date, companyOutstanding) {
-        console.log("date : " + date);
         inputTargetDailyItemList = dailyList;
+        findLastOutstanding(dailyList, date, companyOutstanding);
+    };
+
+    var findLastOutstanding = function (dailyList, date, companyOutstanding) {
         var lastOutstandingFromDailyList;
         if (dailyList.length == 0) {
             // 해당 월에 아예 목록이 없는 경우는 현재 회사 전미수금을 사용한다.
@@ -138,6 +159,7 @@ var writerViewInit = function () {
         outstandingAccout.value = comma(lastOutstanding);
         outstandingTotal.value = comma(lastOutstanding);
     };
+
     companyOwnerName.disabled = true;
     radishCount.addEventListener('keyup', calculateRadish);
     radishPrice.addEventListener('keyup', calculateRadish);
