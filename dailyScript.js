@@ -28,6 +28,26 @@ function DailyManager() {
         });
     }
 
+    this.getDailyDataWithCompany = function (companyId, companyOutstanding, date, dataCallback) {
+        var month = date.substring(0, 7);
+        var dailyRef = self.database.ref("daily/" + month);
+        dailyRef.orderByChild('cId').equalTo(companyId)
+            .once('value', function (snapshot) {
+                var dailyList = new Array();
+                snapshot.forEach(function (childSnapshot) {
+                    var childData = childSnapshot.val();
+                    childData.childKey = childSnapshot.key;
+                    dailyList.push(childData);
+                });
+
+                dailyList.sort(function (a, b) { // 내림차순
+                    return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+                });
+
+                dataCallback(dailyList, date, companyOutstanding);
+            });
+    }
+
     this.getDailyData = function (date, dateCallback) {
         var month = date.substring(0, 7);
         var dailyRef = self.database.ref("daily/" + month);
@@ -43,8 +63,6 @@ function DailyManager() {
             });
 
         dailyRef.on('child_removed', function (oldSnapshot) {
-            console.log("childRemoved : ");
-            console.log(oldSnapshot.val());
             self.dailyManagerCallback.removeChild(oldSnapshot.key);
         });
     }
@@ -172,7 +190,6 @@ function DailyManager() {
                 // 회사의 미수금액 업데이트.
                 var updateValue = lastOutstandingTotal; // 수정, 새로 글 작성시에는 변경없음. 
                 // 삭제를 할 때만 diff값을 처리함. (updateCompanyFlag ? lastOutstandingTotal : lastOutstandingTotal + diff);
-                console.log("update to compan : " + updateValue + " / " + diff);
                 self.updateCompanyOutstandingTotal(companyId, updateValue);
             });
     };
