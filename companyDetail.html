@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>회사 상세</title>
     <link rel="stylesheet" href="jangbu.css" type="text/css">
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
 </head>
 
 <body>
@@ -84,9 +85,110 @@
             </tbody>
         </table>     
     </div>
+    <div id='edit_box' style="position: relative;left: 5px;top: -400px;background: #fff;border-style: solid;padding: 10px;visibility: hidden">
+      <label for='datePicker'>날짜 입력 : </label><input class="date" id='datePicker' type='date' name='datePicker'/><br />
+            <table class='type08'>
+                <form id='daily_writer'>
+                    <input id='childKeyForUpdate' type='hidden' name='childKey'/>
+                    <input id='oldOutstandingTotal' type='hidden' name='oldOutstandingTotal'/>
+                <thead>
+                <tr>
+                    <th scope='cols'>회사명</th>
+                    <th scope='cols'>무 수량</th>
+                    <th scope='cols'>무 가격</th>
+                    <th scope='cols'>양배추 수량</th>
+                    <th scope='cols'>양배추 가격</th>
+                    <th scope='cols'>기타 수량</th>
+                    <th scope='cols'>기타 가격</th>
+                    <th scope='cols'>일 합계</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <select class="companyselector" id='companySelector' name='companyId'>
+                            <option value=''>회사를 선택하세요.</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input id='radishCount' type='number' />
+                    </td>
+                    <td>
+                        <input id='radishPrice' type='number' />
+                    </td>
+                    <td>
+                        <input id='cabbageCount' type='number' />
+                    </td>
+                    <td>
+                        <input id='cabbagePrice' type='number' />
+                    </td>
+                    <td>
+                        <input id='etcCount' type='number' />
+                    </td>
+                    <td>
+                        <input id='etcPrice' type='number' />
+                    </td>
+                    <td>
+                        <label for='discountHundred'>백원단위 할인</label>
+                        <input id='discountHundred' type='checkbox' />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id='companyOwnerName' type='text' value='{대표자 명}'/>
+                    </td>
+                    <td colspan='2'>
+                        <span>무 합계 : </span>
+                        <input id='radishTotal' type='text' />
+                    </td>
+                    <td colspan='2'>
+                        <span>양배추 합계 : </span>
+                        <input id='cabbageTotal' type='text' />
+                    </td>
+                    <td colspan='2'>
+                        <span>기타 합계 : </span>
+                        <input id='etcTotal' type='text' />
+                    </td>
+                    <td>
+                        <input id='dailyTotal' type='text' />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for='unpaid'>외상 체크</label>
+                        <input id='unpaid' type='checkbox' />
+                    </td>
+                    <td colspan='2'>
+                        <span>입금 : </span>
+                        <input id='collect' type='number' />
+                    </td>
+                    <td></td>
+                    <td colspan='2'>
+                        <span>전미수 : </span>
+                        <input id='outstandingAccout' type='text' />
+                    </td>
+                    <td colspan='2'>
+                        <span>미수 합계 : </span>
+                        <input id='outstandingTotal' type='text' />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button id='clearForm'>지우기</button>
+                    </td>
+                    <td colspan='7'>
+                        <button id='submitForm' style="width: 116px; height: 56px">저장</button>
+                    </td>
+                </tr>
+                </tbody>
+                    </form>
+            </table>
+    </div>
 </body>
     
 <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
+<script src='./dailyWriter.js'></script>
+<script src='./dailyScript.js'></script>
 <script>
   // Initialize Firebase
     var config = {
@@ -302,6 +404,33 @@
         return parseInt(inputValue);
     }
     
+    writerViewInit();
+    
+    var editBox = document.getElementById('edit_box');
+    
+    var updateDailyData = function(childKey){
+        editBox.style.visibility = 'visible';
+        console.log(childKey +'/'+ companyKeyFrom);
+        setUpdateForm(childKey, companyKeyFrom);
+    };
+    
+    var removeDailyData = function(month, childKey){
+        if(confirm('삭제하시겠습니까?')){
+            var len = currentDailyList.length;
+            var targetDailyItem;
+            for(var i = 0; i < len; i++){
+                if(currentDailyList[i].childKey == childKey){
+                    targetDailyItem = currentDailyList[i];
+                    break;
+                }
+            }
+            if(targetDailyItem == undefined){
+                alert('해당 데이터를 찾지 못했습니다. 페이지 리로드를 해 주세요');
+                return;
+            }
+            dailyManager.removeDailyItem(month, targetDailyItem);
+        }
+    }
 </script>
     
 </html>
