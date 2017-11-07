@@ -260,16 +260,16 @@
             dailyResultString += '<tr id=\'' + dailyItem.childKey + '\'><td>' 
                 + dailyItem.date + '</td><td>'
                 + '<span class=\'item_count\'>' + dailyItem.radishCount + '</span> '
-                + dailyItem.radishTotal + '</td><td>'
+                + comma(dailyItem.radishTotal) + '</td><td>'
                 + '<span class=\'item_count\'>' + dailyItem.cabbageCount + '</span> '
-                + dailyItem.cabbageTotal + '</td><td>'
+                + comma(dailyItem.cabbageTotal) + '</td><td>'
                 + '<span class=\'item_count\'>' + dailyItem.etcCount + '</span> '
-                + dailyItem.etcTotal + '</td><td>'
+                + comma(dailyItem.etcTotal) + '</td><td>'
                 + dailyItem.discount + '</td><td>'
-                + dailyItem.dailyTotal + '</td><td>'
-                + dailyItem.currentOutstandingAccout + '</td><td>'
-                + dailyItem.collect + '</td><td>'
-                + dailyItem.outstandingTotal + '</td><td>'
+                + comma(dailyItem.dailyTotal) + '</td><td>'
+                + comma(dailyItem.currentOutstandingAccout) + '</td><td>'
+                + comma(dailyItem.collect) + '</td><td>'
+                + comma(dailyItem.outstandingTotal) + '</td><td>'
                 + '<button onclick=\'updateDailyData("'+ dailyItem.childKey +'");\'>수정</button></td><td>'
                 + '<button onclick=\'removeDailyData("'+ dailyItem.childKey +'");\'>삭제</button></td></tr>';
             sumRadishCount += getInt(dailyItem.radishCount);
@@ -284,14 +284,14 @@
         }
         dailyResultString += '<tr><td>합계</td><td>'
                 + '<span class=\'item_count\'>' + sumRadishCount + '</span> '
-                + sumRadishTotal + '</td><td>'
+                + comma(sumRadishTotal) + '</td><td>'
                 + '<span class=\'item_count\'>' + sumCabbageCount + '</span> '
-                + sumCabbageTotal + '</td><td>'
+                + comma(sumCabbageTotal) + '</td><td>'
                 + '<span class=\'item_count\'>' + sumEtcCount + '</span> '
-                + sumEtcTotal + '</td><td>'
-                + sumDiscountTotal + '</td><td>'
-                + sumDailyTotal + '</td><td></td><td>'
-                + sumCollect + '</td><td></td><td></td><td></td></tr>';
+                + comma(sumEtcTotal) + '</td><td>'
+                + comma(sumDiscountTotal) + '</td><td>'
+                + comma(sumDailyTotal) + '</td><td></td><td>'
+                + comma(sumCollect) + '</td><td></td><td></td><td></td></tr>';
         dailyResultBody.innerHTML = dailyResultString;
     }
     
@@ -301,6 +301,29 @@
         }
         return parseInt(inputValue);
     }
+    
+function comma(num) {
+    var len, point, str;
+
+    num = num + "";
+    point = num.length % 3;
+    len = num.length;
+
+    str = num.substring(0, point);
+    while (point < len) {
+        if (str != "") str += ",";
+        str += num.substring(point, point + 3);
+        point += 3;
+    }
+
+    return str;
+}
+
+//콤마 삭제
+function rm_comma(num) {
+    var number = num + "";
+    return number.replace(",", "");
+}
     
 </script>
     

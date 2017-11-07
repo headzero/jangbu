@@ -142,6 +142,7 @@
 <script src='./dailyScript.js'></script>
 <script>
     writerViewInit();
+//    alert("와이파이가 꺼져있어야 합니다");
     
     var updateDailyData = function(childKey){
         var currentDailyItem;
@@ -164,6 +165,7 @@
                 }
             }
             setUpdateForm(currentDailyItem, companyItem);
+            topFunction();
         }
     };
     
@@ -299,6 +301,10 @@
             return 0;
         }
         return parseInt(inputValue);
+    }
+    
+    function topFunction() {
+        document.documentElement.scrollTop = 0; // For Chrome, Safari and Opera 
     }
 </script>
 
