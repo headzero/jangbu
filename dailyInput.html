@@ -235,7 +235,7 @@
             var dailyResultBody = document.getElementById('dailyResult');
             var dailyResultString = '';
             var len = dailyList.length;
-            for(var i = 0; i < len; i++){
+            for(var i = len-1; i >= 0; i--){
                 var dailyItem = dailyList[i];
                 dailyResultString += '<tr id=\'' + dailyItem.childKey + '\'><td>' 
                     + dailyItem.cName + '</td><td>'
